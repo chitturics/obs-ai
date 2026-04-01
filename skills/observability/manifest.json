@@ -1,0 +1,84 @@
+{
+  "name": "observability",
+  "version": "1.0.0",
+  "description": "Observability skill for monitoring system health, tracking resource usage, analyzing metrics, and suggesting alerting rules.",
+  "author": "ObsAI Team",
+  "category": "observability",
+  "tags": ["monitoring", "metrics", "health"],
+  "icon": "activity",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "health_check_timeout": {
+      "type": "number",
+      "description": "Timeout in seconds for health check operations",
+      "default": 10
+    },
+    "alert_threshold_cpu": {
+      "type": "number",
+      "description": "CPU usage percentage to trigger alert suggestions",
+      "default": 80
+    },
+    "alert_threshold_memory": {
+      "type": "number",
+      "description": "Memory usage percentage to trigger alert suggestions",
+      "default": 85
+    }
+  },
+  "actions": [
+    {
+      "name": "check_system_health",
+      "description": "Returns overall system health status including service connectivity (Postgres, Ollama, ChromaDB, Redis), internal metrics, and active alerts.",
+      "parameters": {},
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["health", "status", "monitoring"],
+      "requires": []
+    },
+    {
+      "name": "get_resource_usage",
+      "description": "Returns current CPU, memory, and disk usage for the system. Uses lightweight /proc-based checks with graceful fallback.",
+      "parameters": {},
+      "approval_level": "none",
+      "timeout_seconds": 5,
+      "max_retries": 1,
+      "intents": ["resources", "cpu", "memory", "disk"],
+      "requires": []
+    },
+    {
+      "name": "analyze_metrics",
+      "description": "Analyze collected internal metrics such as response latency, throughput, error rates, and learning effectiveness. Optionally filter by metric name.",
+      "parameters": {
+        "metric_name": {
+          "type": "string",
+          "description": "Optional specific metric name to analyze (e.g., 'response_latency', 'error_rate', 'throughput')",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["metrics", "analysis", "performance"],
+      "requires": []
+    },
+    {
+      "name": "suggest_alerts",
+      "description": "Suggest alerting rules based on current system state and best practices. Optionally scope to a specific service.",
+      "parameters": {
+        "service": {
+          "type": "string",
+          "description": "Optional service name to scope alert suggestions to (e.g., 'postgres', 'ollama', 'chromadb')",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["alerts", "monitoring", "suggestions"],
+      "requires": []
+    }
+  ]
+}
