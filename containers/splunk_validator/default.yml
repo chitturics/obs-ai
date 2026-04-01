@@ -1,0 +1,43 @@
+# =============================================================================
+# Splunk Validator Configuration
+# =============================================================================
+# Minimal configuration for validation-only Splunk instance
+# This instance is NOT for production use - only for btool and search parsing
+# =============================================================================
+
+splunk:
+  conf:
+    # Disable indexing to save resources
+    indexes:
+      default:
+        homePath: $SPLUNK_DB/defaultdb/db
+        coldPath: $SPLUNK_DB/defaultdb/colddb
+        thawedPath: $SPLUNK_DB/defaultdb/thaweddb
+        maxTotalDataSizeMB: 100
+        maxWarmDBCount: 1
+
+    # Minimal server configuration
+    server:
+      general:
+        # Disable clustering
+        site: default
+
+      diskUsage:
+        minFreeSpace: 100
+
+    # Web configuration (optional - can be disabled)
+    web:
+      settings:
+        enableSplunkWebSSL: false
+        httpport: 8005
+        startwebserver: 0  # Disable web UI to save resources
+
+    # Limits for minimal memory footprint
+    limits:
+      search:
+        max_searches_per_cpu: 1
+        max_search_queue_entries: 10
+        max_history_length: 100
+
+      kv:
+        max_rows_per_query: 1000

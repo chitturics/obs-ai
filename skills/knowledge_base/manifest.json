@@ -1,0 +1,94 @@
+{
+  "name": "knowledge_base",
+  "version": "1.0.0",
+  "description": "Knowledge base management skill for searching ingested documents, ingesting new content, listing vector collections, and tracking learning pipeline statistics.",
+  "author": "ObsAI Team",
+  "category": "knowledge",
+  "tags": ["knowledge", "search", "learning"],
+  "icon": "book-open",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "default_collection": {
+      "type": "string",
+      "description": "Default ChromaDB collection to search",
+      "default": ""
+    },
+    "search_top_k": {
+      "type": "number",
+      "description": "Number of results to return from vector search",
+      "default": 5
+    },
+    "chunk_size": {
+      "type": "number",
+      "description": "Default chunk size for document ingestion",
+      "default": 500
+    }
+  },
+  "actions": [
+    {
+      "name": "search_knowledge",
+      "description": "Search the knowledge base using semantic similarity. Queries vector collections for relevant documents, SPL examples, and configuration knowledge.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The search query in natural language",
+          "required": true
+        },
+        "collection": {
+          "type": "string",
+          "description": "Optional collection name to restrict the search to",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["search", "knowledge", "lookup"],
+      "requires": []
+    },
+    {
+      "name": "ingest_document",
+      "description": "Ingest a document into the knowledge base. Supports PDF, HTML, JSON, CSV, YAML, and plain text. Chunks and embeds the content for semantic retrieval.",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "File path or URL of the document to ingest",
+          "required": true
+        },
+        "doc_type": {
+          "type": "string",
+          "description": "Optional document type hint (pdf, html, json, csv, yaml, text). Auto-detected if omitted.",
+          "required": false
+        }
+      },
+      "approval_level": "confirm",
+      "timeout_seconds": 120,
+      "max_retries": 1,
+      "intents": ["ingest", "upload", "learn"],
+      "requires": []
+    },
+    {
+      "name": "list_collections",
+      "description": "List all available ChromaDB vector collections with document counts and metadata.",
+      "parameters": {},
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["collections", "list", "knowledge"],
+      "requires": []
+    },
+    {
+      "name": "get_learning_stats",
+      "description": "Get learning pipeline statistics including episode counts, success rates, confidence trends, and improvement trajectory.",
+      "parameters": {},
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["learning", "stats", "metrics"],
+      "requires": []
+    }
+  ]
+}
