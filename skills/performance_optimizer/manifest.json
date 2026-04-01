@@ -1,0 +1,91 @@
+{
+  "name": "performance_optimizer",
+  "version": "1.0.0",
+  "description": "Performance optimization skill for profiling searches, suggesting tstats conversions, optimizing lookups, and tuning limits.conf.",
+  "author": "ObsAI Team",
+  "category": "splunk",
+  "tags": ["performance", "optimization", "tuning"],
+  "icon": "zap",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "performance_target": {
+      "type": "string",
+      "description": "Target performance level: 'fast', 'balanced', or 'thorough'",
+      "default": "balanced"
+    },
+    "max_tstats_fields": {
+      "type": "number",
+      "description": "Maximum number of fields for tstats conversion analysis",
+      "default": 20
+    }
+  },
+  "actions": [
+    {
+      "name": "profile_search",
+      "description": "Profile an SPL query for performance bottlenecks by analyzing command pipeline, data scope, and resource usage patterns.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The SPL query to profile",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["profile", "performance", "bottleneck", "slow"],
+      "requires": []
+    },
+    {
+      "name": "suggest_tstats",
+      "description": "Analyze an SPL query to determine if it can be converted to tstats for better performance.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The SPL query to analyze for tstats conversion",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["tstats", "conversion", "acceleration", "datamodel"],
+      "requires": []
+    },
+    {
+      "name": "optimize_lookups",
+      "description": "Suggest lookup optimization strategies based on lookup usage patterns in a query.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "SPL query containing lookup commands to optimize",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["lookup", "optimize", "performance"],
+      "requires": []
+    },
+    {
+      "name": "tune_limits",
+      "description": "Suggest limits.conf tuning based on query patterns and workload characteristics.",
+      "parameters": {
+        "workload": {
+          "type": "string",
+          "description": "Description of the workload: 'heavy_search', 'high_concurrency', 'large_lookups', 'real_time', or 'summary_indexing'",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["limits", "tuning", "configuration", "settings"],
+      "requires": []
+    }
+  ]
+}
