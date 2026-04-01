@@ -1,0 +1,91 @@
+{
+  "name": "troubleshooter",
+  "version": "1.0.0",
+  "description": "Systematic troubleshooting skill for diagnosing Splunk issues, suggesting fixes, checking connectivity, and analyzing internal logs.",
+  "author": "ObsAI Team",
+  "category": "splunk",
+  "tags": ["troubleshooting", "diagnosis", "repair"],
+  "icon": "tool",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "default_index": {
+      "type": "string",
+      "description": "Default internal index for log analysis",
+      "default": "_internal"
+    },
+    "diagnosis_depth": {
+      "type": "string",
+      "description": "Depth of diagnosis: 'quick', 'standard', or 'deep'",
+      "default": "standard"
+    }
+  },
+  "actions": [
+    {
+      "name": "diagnose_issue",
+      "description": "Systematically diagnose a Splunk issue using a decision tree based on error keywords and symptoms.",
+      "parameters": {
+        "symptoms": {
+          "type": "string",
+          "description": "Description of the issue or error message",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 20,
+      "max_retries": 2,
+      "intents": ["diagnose", "troubleshoot", "issue", "problem"],
+      "requires": []
+    },
+    {
+      "name": "suggest_fix",
+      "description": "Suggest fixes for common Splunk errors based on error patterns and known resolutions.",
+      "parameters": {
+        "error": {
+          "type": "string",
+          "description": "The error message or error code to look up",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["fix", "repair", "resolve", "error"],
+      "requires": []
+    },
+    {
+      "name": "check_connectivity",
+      "description": "Generate connectivity check queries for Splunk components such as forwarders, indexers, and search heads.",
+      "parameters": {
+        "component": {
+          "type": "string",
+          "description": "Component to check: 'forwarder', 'indexer', 'search_head', 'deployment_server', or 'all'",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["connectivity", "check", "status", "connection"],
+      "requires": []
+    },
+    {
+      "name": "analyze_logs",
+      "description": "Generate SPL queries for analyzing internal Splunk logs (_internal, _audit) to identify issues.",
+      "parameters": {
+        "area": {
+          "type": "string",
+          "description": "Area to analyze: 'indexing', 'search', 'forwarder', 'license', 'auth', or 'general'",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["logs", "internal", "audit", "analysis"],
+      "requires": []
+    }
+  ]
+}

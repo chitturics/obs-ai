@@ -1,0 +1,91 @@
+{
+  "name": "spl_expert",
+  "version": "1.0.0",
+  "description": "SPL query expertise skill for generating, optimizing, explaining, and analyzing Splunk Search Processing Language queries.",
+  "author": "ObsAI Team",
+  "category": "splunk",
+  "tags": ["spl", "queries", "optimization"],
+  "icon": "code",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "splunk_host": {
+      "type": "string",
+      "description": "Splunk host for REST API validation",
+      "default": ""
+    },
+    "max_query_length": {
+      "type": "number",
+      "description": "Maximum SPL query length to process",
+      "default": 10000
+    }
+  },
+  "actions": [
+    {
+      "name": "generate_spl",
+      "description": "Generate an SPL query from a natural language description. Uses template-based generation and NLP-to-SPL translation to produce correct, optimized queries.",
+      "parameters": {
+        "description": {
+          "type": "string",
+          "description": "Natural language description of the desired search",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["generate_spl", "query", "search"],
+      "requires": []
+    },
+    {
+      "name": "optimize_query",
+      "description": "Optimize an existing SPL query for better performance. Analyzes command ordering, suggests tstats conversion, detects expensive operations, and returns an improved version.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The SPL query to optimize",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["optimize", "performance", "query"],
+      "requires": []
+    },
+    {
+      "name": "explain_query",
+      "description": "Explain what an SPL query does in plain English. Breaks down each pipeline stage, identifies the data flow, and describes the output format.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The SPL query to explain",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["explain", "help", "query"],
+      "requires": []
+    },
+    {
+      "name": "detect_anti_patterns",
+      "description": "Detect performance anti-patterns in an SPL query. Checks for issues like wildcard index usage, unnecessary subsearches, inefficient command ordering, and resource-intensive operations.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The SPL query to check for anti-patterns",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["anti_pattern", "performance", "review"],
+      "requires": []
+    }
+  ]
+}
