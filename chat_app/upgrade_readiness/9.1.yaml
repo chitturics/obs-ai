@@ -1,0 +1,40 @@
+version: "9.1"
+release_date: "2023-03-14"
+changes:
+  # WARNINGS
+  - id: "BC-9.1-001"
+    category: "configuration"
+    severity: "warning"
+    title: "search_dispatch_quotas default values changed"
+    description: >
+      Several default values in the [search_dispatch_quotas] stanza of
+      server.conf have been tightened. Searches that previously ran without
+      quota issues may now be throttled or rejected in busy environments.
+      The key changes are reduced defaults for max_searches_per_cpu and
+      max_realtime_search_multiplier.
+    detection: >
+      Check server.conf [search_dispatch_quotas] for explicit values. If
+      relying on defaults, validate that existing search concurrency does
+      not exceed the new defaults under peak load.
+    conf_file: "server.conf"
+    stanza: "search_dispatch_quotas"
+    migration: >
+      Review concurrency under peak load. If searches are being throttled,
+      explicitly set max_searches_per_cpu and related quota keys to values
+      that match your hardware capacity.
+
+  # INFO
+  - id: "BC-9.1-002"
+    category: "platform"
+    severity: "info"
+    title: "New search scheduling algorithm for scheduled reports"
+    description: >
+      Splunk 9.1 introduces an improved search scheduling algorithm that
+      distributes scheduled searches more evenly across time windows. This
+      may shift the exact execution time of some scheduled reports by up to
+      a few minutes relative to their configured schedule.
+    detection: "No automated detection needed"
+    migration: >
+      Review time-sensitive scheduled reports. If a report must run at
+      exactly HH:MM, enable the skip_scheduling_stagger = true setting in
+      savedsearches.conf for that search.

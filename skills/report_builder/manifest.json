@@ -1,0 +1,121 @@
+{
+  "name": "report_builder",
+  "version": "1.0.0",
+  "description": "Report and dashboard builder skill for designing dashboards, generating SimpleXML panels, suggesting visualizations, and scheduling reports.",
+  "author": "ObsAI Team",
+  "category": "splunk",
+  "tags": ["reports", "dashboards", "visualization"],
+  "icon": "bar-chart",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "default_app": {
+      "type": "string",
+      "description": "Default Splunk app context for dashboards",
+      "default": "search"
+    },
+    "dashboard_version": {
+      "type": "string",
+      "description": "Dashboard framework version: 'simplexml' or 'dashboard_studio'",
+      "default": "simplexml"
+    }
+  },
+  "actions": [
+    {
+      "name": "design_dashboard",
+      "description": "Design a dashboard layout from requirements including panel arrangement and data sources.",
+      "parameters": {
+        "requirements": {
+          "type": "string",
+          "description": "Description of dashboard requirements (e.g., 'security overview with login stats, threat map, alert table')",
+          "required": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Dashboard title",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["dashboard", "design", "layout", "build"],
+      "requires": []
+    },
+    {
+      "name": "generate_panel",
+      "description": "Generate a SimpleXML dashboard panel definition from a query and visualization type.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "SPL query for the panel",
+          "required": true
+        },
+        "title": {
+          "type": "string",
+          "description": "Panel title",
+          "required": true
+        },
+        "viz_type": {
+          "type": "string",
+          "description": "Visualization type: 'table', 'chart', 'single', 'map', 'timechart', or 'event'",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["panel", "simplexml", "visualization"],
+      "requires": []
+    },
+    {
+      "name": "suggest_visualizations",
+      "description": "Suggest the best visualization type for given data characteristics.",
+      "parameters": {
+        "data_description": {
+          "type": "string",
+          "description": "Description of the data (e.g., 'count by sourcetype over time', 'top 10 users by login count')",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["visualization", "chart", "suggest", "graph"],
+      "requires": []
+    },
+    {
+      "name": "schedule_report",
+      "description": "Generate saved search configuration for scheduled reports with alert actions.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "SPL query for the report",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name for the saved search",
+          "required": true
+        },
+        "schedule": {
+          "type": "string",
+          "description": "Cron schedule (e.g., '0 6 * * *' for daily at 6am)",
+          "required": true
+        },
+        "alert_email": {
+          "type": "string",
+          "description": "Email address for report delivery",
+          "required": false
+        }
+      },
+      "approval_level": "confirm",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["schedule", "report", "saved_search", "alert"],
+      "requires": []
+    }
+  ]
+}

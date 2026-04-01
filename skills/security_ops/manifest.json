@@ -1,0 +1,91 @@
+{
+  "name": "security_ops",
+  "version": "1.0.0",
+  "description": "Security operations skill for threat detection, access auditing, compliance checking, and risk assessment using SPL and MITRE ATT&CK.",
+  "author": "ObsAI Team",
+  "category": "security",
+  "tags": ["security", "threat", "detection", "compliance"],
+  "icon": "shield",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "mitre_version": {
+      "type": "string",
+      "description": "MITRE ATT&CK framework version to reference",
+      "default": "14.0"
+    },
+    "risk_threshold": {
+      "type": "number",
+      "description": "Default risk score threshold for alerts (0-100)",
+      "default": 70
+    }
+  },
+  "actions": [
+    {
+      "name": "detect_threats",
+      "description": "Generate threat detection SPL queries from MITRE ATT&CK technique IDs or names. Produces ready-to-use correlation searches.",
+      "parameters": {
+        "technique": {
+          "type": "string",
+          "description": "MITRE ATT&CK technique ID (e.g., T1059) or name (e.g., 'Command and Scripting Interpreter')",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["threat", "detection", "mitre", "attack"],
+      "requires": []
+    },
+    {
+      "name": "audit_access",
+      "description": "Generate audit queries for access patterns, privilege escalation, and anomalous login behavior.",
+      "parameters": {
+        "audit_type": {
+          "type": "string",
+          "description": "Type of audit: 'login', 'privilege', 'access', 'lateral_movement', or 'data_exfil'",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["audit", "access", "privilege", "login"],
+      "requires": []
+    },
+    {
+      "name": "check_compliance",
+      "description": "Check configurations against CIS benchmarks and security best practices for Splunk deployments.",
+      "parameters": {
+        "config": {
+          "type": "string",
+          "description": "Configuration content or description to check (e.g., props.conf content, deployment description)",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["compliance", "CIS", "security", "benchmark"],
+      "requires": []
+    },
+    {
+      "name": "assess_risk",
+      "description": "Assess risk score based on query patterns, data exposure, and security indicators.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "SPL query or activity description to assess for risk",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["risk", "assessment", "score", "exposure"],
+      "requires": []
+    }
+  ]
+}

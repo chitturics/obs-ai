@@ -1,0 +1,87 @@
+{
+  "name": "splunk_admin",
+  "version": "1.0.0",
+  "description": "Splunk administration skill for analyzing saved searches, validating configuration files, auditing indexes, and checking props.conf settings.",
+  "author": "ObsAI Team",
+  "category": "splunk",
+  "tags": ["admin", "configuration", "health"],
+  "icon": "server",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "splunk_config_root": {
+      "type": "string",
+      "description": "Root path for Splunk configuration files",
+      "default": "/opt/splunk/etc/apps"
+    }
+  },
+  "actions": [
+    {
+      "name": "analyze_saved_searches",
+      "description": "Analyze saved searches for performance issues, wildcard index usage, scheduling conflicts, and best-practice violations. Optionally filter by index.",
+      "parameters": {
+        "index_filter": {
+          "type": "string",
+          "description": "Optional index name to filter saved searches by",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 30,
+      "max_retries": 1,
+      "intents": ["admin", "saved_search", "audit"],
+      "requires": []
+    },
+    {
+      "name": "check_config_health",
+      "description": "Validate Splunk configuration files for best practices, deprecated settings, and common misconfigurations. Optionally scope to a specific app.",
+      "parameters": {
+        "app_name": {
+          "type": "string",
+          "description": "Optional Splunk app name to limit the check to",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 60,
+      "max_retries": 1,
+      "intents": ["admin", "config", "health"],
+      "requires": []
+    },
+    {
+      "name": "audit_indexes",
+      "description": "List Splunk indexes with size statistics, retention settings, and usage metrics. Optionally filter by minimum size.",
+      "parameters": {
+        "min_size_mb": {
+          "type": "number",
+          "description": "Minimum index size in MB to include in results",
+          "required": false,
+          "default": 0
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 30,
+      "max_retries": 1,
+      "intents": ["admin", "indexes", "storage"],
+      "requires": []
+    },
+    {
+      "name": "validate_props",
+      "description": "Validate props.conf settings for correctness, including TRANSFORMS references, TIME_FORMAT patterns, and field extraction configurations. Optionally filter by sourcetype.",
+      "parameters": {
+        "sourcetype": {
+          "type": "string",
+          "description": "Optional sourcetype stanza to validate",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 30,
+      "max_retries": 1,
+      "intents": ["admin", "props", "sourcetype"],
+      "requires": []
+    }
+  ]
+}

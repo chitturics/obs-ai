@@ -1,0 +1,30 @@
+version: "9.3"
+release_date: "2024-03-19"
+changes:
+  # INFO
+  - id: "BC-9.3-001"
+    category: "platform"
+    severity: "info"
+    title: "Search performance improvements for large index sets"
+    description: >
+      Splunk 9.3 includes indexer and search-head performance enhancements
+      that reduce wall-clock time for searches spanning many indexes. No
+      configuration changes are required. Customers with many indexes may
+      observe noticeably faster searches without any tuning.
+    detection: "No automated detection needed"
+    migration: "No action required."
+
+  - id: "BC-9.3-002"
+    category: "platform"
+    severity: "info"
+    title: "New admin features: role-based data access controls"
+    description: >
+      Splunk 9.3 introduces enhanced role-based data access controls (RBDAC)
+      that allow fine-grained restrictions on which indexes and source types
+      a role can access. Existing role definitions are unaffected and continue
+      to work as before.
+    detection: "No automated detection needed"
+    migration: >
+      No action required. Optionally review and tighten index access policies
+      for analyst and viewer roles using the new RBDAC capabilities in
+      Settings > Access Controls.

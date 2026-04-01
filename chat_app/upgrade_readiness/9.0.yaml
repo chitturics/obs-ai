@@ -1,0 +1,48 @@
+version: "9.0"
+release_date: "2022-09-13"
+changes:
+  # BLOCKERS
+  - id: "BC-9.0-001"
+    category: "runtime"
+    severity: "blocker"
+    title: "Python 2 removed"
+    description: >
+      Python 2 support has been completely removed. Apps that require Python 2 or
+      set python.version = python2 in app.conf will fail to execute their scripts.
+    detection: "Scan app.conf and bin/ scripts for python.version = python2 or #!/usr/bin/python2 shebangs"
+    conf_file: "app.conf"
+    stanza: "launcher"
+    key: "python.version"
+    migration: >
+      Update all custom scripts to Python 3. Replace any remaining Python 2 syntax
+      (print statements, urllib2, etc.) with Python 3 equivalents. Set
+      python.version = python3 in app.conf [launcher].
+
+  # WARNINGS
+  - id: "BC-9.0-002"
+    category: "platform"
+    severity: "warning"
+    title: "jQuery 2 removed from dashboards"
+    description: >
+      Splunk removed the bundled jQuery 2.x library from the dashboard framework.
+      Custom dashboard panels or scripts that depend on the old jQuery version
+      may break with JavaScript errors.
+    detection: "Audit custom dashboard HTML, JS files, and SimpleXML for jQuery 2 usage"
+    migration: >
+      Update custom JavaScript to use the bundled jQuery 3.x, or vendor your own
+      compatible version. Test all custom dashboard panels after upgrade.
+
+  # INFO
+  - id: "BC-9.0-003"
+    category: "platform"
+    severity: "info"
+    title: "Dashboard Studio replaces SimpleXML as primary UI"
+    description: >
+      Dashboard Studio is now the default dashboard creation experience. Existing
+      SimpleXML dashboards continue to work, but new dashboards default to the
+      Dashboard Studio JSON format. Migration tooling is available in the UI.
+    detection: "No automated detection needed — existing dashboards still load"
+    migration: >
+      No immediate action required. Plan migration to Dashboard Studio for
+      new dashboards. Use the built-in migration wizard for high-value SimpleXML
+      dashboards to take advantage of improved visualisation options.

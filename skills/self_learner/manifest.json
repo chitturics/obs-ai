@@ -1,0 +1,96 @@
+{
+  "name": "self_learner",
+  "version": "1.0.0",
+  "description": "Self-improvement skill for reviewing interactions, identifying knowledge gaps, generating training data, and measuring improvement trends.",
+  "author": "ObsAI Team",
+  "category": "knowledge",
+  "tags": ["learning", "improvement", "self"],
+  "icon": "trending-up",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "min_confidence_threshold": {
+      "type": "number",
+      "description": "Minimum confidence threshold below which responses are flagged for review",
+      "default": 0.6
+    },
+    "training_pair_format": {
+      "type": "string",
+      "description": "Format for generated training pairs: 'json', 'csv', or 'markdown'",
+      "default": "json"
+    }
+  },
+  "actions": [
+    {
+      "name": "review_interactions",
+      "description": "Review past interactions for improvement opportunities by analyzing response patterns, user feedback signals, and confidence levels.",
+      "parameters": {
+        "interactions": {
+          "type": "string",
+          "description": "JSON string containing interaction records or description of interaction patterns to review",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["review", "interactions", "feedback", "quality"],
+      "requires": []
+    },
+    {
+      "name": "identify_gaps",
+      "description": "Identify knowledge gaps based on failed or low-confidence responses, unanswered questions, and topic coverage analysis.",
+      "parameters": {
+        "responses": {
+          "type": "string",
+          "description": "JSON string of response records or description of response patterns with confidence levels",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["gaps", "knowledge", "missing", "coverage"],
+      "requires": []
+    },
+    {
+      "name": "generate_training",
+      "description": "Generate training question-answer pairs from existing knowledge to expand coverage and improve response quality.",
+      "parameters": {
+        "topic": {
+          "type": "string",
+          "description": "Topic area to generate training pairs for (e.g., 'spl_optimization', 'security_detection', 'data_models')",
+          "required": true
+        },
+        "count": {
+          "type": "number",
+          "description": "Number of training pairs to generate",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 20,
+      "max_retries": 1,
+      "intents": ["training", "generate", "qa", "pairs"],
+      "requires": []
+    },
+    {
+      "name": "measure_improvement",
+      "description": "Measure improvement trends over time by analyzing confidence scores, response accuracy, and knowledge coverage metrics.",
+      "parameters": {
+        "metrics": {
+          "type": "string",
+          "description": "JSON string of historical metrics or description of metrics to analyze",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["improvement", "trends", "metrics", "progress"],
+      "requires": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+version: "9.2"
+release_date: "2023-10-17"
+changes:
+  # INFO
+  - id: "BC-9.2-001"
+    category: "platform"
+    severity: "info"
+    title: "Dashboard Studio performance improvements and new chart types"
+    description: >
+      Dashboard Studio gains significant performance improvements for large
+      datasets and introduces several new visualisation types (funnel, sankey,
+      single-value radial). Existing dashboards are unaffected and do not
+      require migration.
+    detection: "No automated detection needed"
+    migration: >
+      No action required. Optionally adopt new chart types in Dashboard Studio
+      dashboards. Review release notes for the full list of new visualisations.
+
+  - id: "BC-9.2-002"
+    category: "platform"
+    severity: "info"
+    title: "New SPL2 search commands available (preview)"
+    description: >
+      Splunk 9.2 ships a preview of several new SPL2 commands including
+      `appendcols`, `streamstats` improvements, and enhanced eval functions.
+      SPL1 searches are unaffected. SPL2 support is opt-in at this stage.
+    detection: "No automated detection needed"
+    migration: >
+      No action required for existing SPL1 searches. Explore new SPL2
+      commands in development/test environments. Full SPL2 support is planned
+      for a future major release.
