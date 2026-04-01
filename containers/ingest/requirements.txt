@@ -1,0 +1,35 @@
+# =============================================================================
+# Ingest Container Requirements - Minimal for document ingestion
+# =============================================================================
+# Only packages actually used by ingest_specs/ and chat_app.vectorstore
+
+# Core LangChain (embeddings + vector store)
+langchain>=0.1.0
+langchain-ollama>=0.1.0
+langchain-core>=0.1.0
+langchain-chroma>=0.1.0
+langchain-text-splitters>=0.1.0
+
+# Vector Store
+chromadb>=0.4.0
+
+# Document Processing
+pypdf>=4.0.0
+beautifulsoup4>=4.12.0
+tiktoken>=0.5.0
+
+# HTTP & Networking
+httpx>=0.25.0
+requests>=2.31.0
+
+# Configuration
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+tqdm>=4.66.0
+
+# NOTE: playwright is installed separately in Dockerfile (needs system deps)
+# NOTE: cloudscraper is optional (try/except in vectorstore.py)

@@ -1,0 +1,17 @@
+# RAG Retrieval Configuration
+# Edit this file to configure the corresponding feature.
+
+top_k:
+  feedback: 3
+  specs: 5
+  primary: 5
+similarity_threshold:
+  feedback: 0.7
+  specs: 0.6
+  primary: 0.6
+strategy: multi_collection
+compound_queries:
+  enabled: true
+  detection_method: regex
+  max_sub_queries: 5
+k_multiplier: 3

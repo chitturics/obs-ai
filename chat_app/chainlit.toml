@@ -1,0 +1,56 @@
+[project]
+name = "ObsAI - Observability AI Assistant"
+public = true
+
+[UI]
+name = "ObsAI"
+default_collapse_content = true
+
+[UI.theme]
+default = "dark"
+
+[UI.theme.override]
+primary = "#FF8C42"
+background = "#1a2332"
+paper = "#1e2936"
+
+[data_layer]
+provider = "sqlalchemy"
+
+[storage]
+provider = "database"
+
+[blob_storage]
+provider = "local"
+path = "/app/.chainlit/blobs"
+
+[features]
+unsafe_allow_html = false
+latex = false
+user_message_autoscroll = true
+auto_tag_thread = true
+edit_message = true
+
+[features.spontaneous_file_upload]
+enabled = true
+accept = ["*/*"]
+max_files = 20
+max_size_mb = 500
+
+[features.audio]
+enabled = true
+sample_rate = 24000
+
+[features.mcp]
+# MCP (Model Context Protocol) configuration
+enabled = true
+
+[features.mcp.sse]
+enabled = true
+
+[features.mcp.streamable-http]
+enabled = true
+
+[features.mcp.stdio]
+enabled = true
+allowed_executables = ["npx", "uvx", "node", "python"]

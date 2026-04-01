@@ -1,0 +1,16 @@
+# ChromaDB Vector Database
+FROM docker.io/chromadb/chroma:latest
+
+ENV IS_PERSISTENT=TRUE
+ENV PERSIST_DIRECTORY=/data
+ENV ANONYMIZED_TELEMETRY=FALSE
+ENV ALLOW_RESET=TRUE
+# ChromaDB respects SERVER_PORT environment variable
+ENV SERVER_PORT=8001
+
+EXPOSE 8001
+
+# ChromaDB CLI expects 'run' subcommand to start the server
+# Use --port flag to override default 8000
+ENTRYPOINT ["chroma"]
+CMD ["run", "--path", "/data", "--host", "0.0.0.0", "--port", "8001"]

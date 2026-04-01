@@ -1,0 +1,728 @@
+{
+  "download_date": "2026-02-03 09:21:34",
+  "total_commands": 180,
+  "downloaded": 172,
+  "failed": 8,
+  "commands": {
+    "abstract": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/abstract",
+      "title": "Search Commands"
+    },
+    "top": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/top",
+      "title": "top"
+    },
+    "predict": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/predict",
+      "title": "predict"
+    },
+    "transaction": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/transaction",
+      "title": "transaction"
+    },
+    "streamstats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/streamstats",
+      "title": "streamstats"
+    },
+    "searchtxn": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/searchtxn",
+      "title": "searchtxn"
+    },
+    "makemv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/makemv",
+      "title": "makemv"
+    },
+    "sitimechart": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sitimechart",
+      "title": "sitimechart"
+    },
+    "geom": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/geom",
+      "title": "geom"
+    },
+    "mstats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/mstats",
+      "title": "mstats"
+    },
+    "x11": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/x11",
+      "title": "x11"
+    },
+    "untable": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/untable",
+      "title": "untable"
+    },
+    "multikv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/multikv",
+      "title": "multikv"
+    },
+    "addinfo": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/addinfo",
+      "title": "addinfo"
+    },
+    "accum": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/accum",
+      "title": "accum"
+    },
+    "outlier": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/outlier",
+      "title": "outlier"
+    },
+    "return": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/return",
+      "title": "return"
+    },
+    "selfjoin": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/selfjoin",
+      "title": "selfjoin"
+    },
+    "dbinspect": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/dbinspect",
+      "title": "dbinspect"
+    },
+    "rename": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rename",
+      "title": "rename"
+    },
+    "localop": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/localop",
+      "title": "localop"
+    },
+    "spath": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/spath",
+      "title": "spath"
+    },
+    "delta": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/delta",
+      "title": "delta"
+    },
+    "collect": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/collect",
+      "title": "collect, stash"
+    },
+    "rangemap": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rangemap",
+      "title": "rangemap"
+    },
+    "outputtext": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/outputtext",
+      "title": "outputtext"
+    },
+    "datamodel": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/datamodel",
+      "title": "datamodel"
+    },
+    "geomfilter": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/geomfilter",
+      "title": "geomfilter"
+    },
+    "sirare": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sirare",
+      "title": "sirare"
+    },
+    "autoregress": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/autoregress",
+      "title": "autoregress"
+    },
+    "reltime": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/reltime",
+      "title": "reltime"
+    },
+    "append": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/append",
+      "title": "append"
+    },
+    "timechart": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/timechart",
+      "title": "timechart"
+    },
+    "mvexpand": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/mvexpand",
+      "title": "mvexpand"
+    },
+    "fields": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/fields",
+      "title": "fields"
+    },
+    "fillnull": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/fillnull",
+      "title": "fillnull"
+    },
+    "outputlookup": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/outputlookup",
+      "title": "outputlookup"
+    },
+    "inputlookup": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/inputlookup",
+      "title": "inputlookup"
+    },
+    "set": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/set",
+      "title": "set"
+    },
+    "eval": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/eval",
+      "title": "eval"
+    },
+    "reverse": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/reverse",
+      "title": "reverse"
+    },
+    "tstats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/tstats",
+      "title": "tstats"
+    },
+    "rare": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rare",
+      "title": "rare"
+    },
+    "join": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/join",
+      "title": "join"
+    },
+    "loadjob": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/loadjob",
+      "title": "loadjob"
+    },
+    "gentimes": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/gentimes",
+      "title": "gentimes"
+    },
+    "mcollect": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/mcollect",
+      "title": "mcollect"
+    },
+    "gauge": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/gauge",
+      "title": "gauge"
+    },
+    "arules": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/arules",
+      "title": "arules"
+    },
+    "bucket": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/bucket",
+      "title": "bin, discretize"
+    },
+    "anomalies": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/anomalies",
+      "title": "anomalies"
+    },
+    "appendpipe": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/appendpipe",
+      "title": "appendpipe"
+    },
+    "eventcount": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/eventcount",
+      "title": "eventcount"
+    },
+    "inputcsv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/inputcsv",
+      "title": "inputcsv"
+    },
+    "addtotals": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/addtotals",
+      "title": "addtotals"
+    },
+    "anomalydetection": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/anomalydetection",
+      "title": "anomalydetection"
+    },
+    "anomalousvalue": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/anomalousvalue",
+      "title": "anomalousvalue"
+    },
+    "foreach": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/foreach",
+      "title": "foreach"
+    },
+    "sitop": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sitop",
+      "title": "sitop"
+    },
+    "sistats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sistats",
+      "title": "sistats"
+    },
+    "geostats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/geostats",
+      "title": "geostats"
+    },
+    "regex": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/regex",
+      "title": "regex"
+    },
+    "format": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/format",
+      "title": "format"
+    },
+    "xyseries": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/xyseries",
+      "title": "xyseries"
+    },
+    "appendcols": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/appendcols",
+      "title": "appendcols"
+    },
+    "chart": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/chart",
+      "title": "chart"
+    },
+    "table": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/table",
+      "title": "table"
+    },
+    "typelearner": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/typelearner",
+      "title": "typelearner"
+    },
+    "xmlkv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/xmlkv",
+      "title": "xmlkv"
+    },
+    "mpreview": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/mpreview",
+      "title": "mpreview, msearch"
+    },
+    "iplocation": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/iplocation",
+      "title": "iplocation"
+    },
+    "savedsearch": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/savedsearch",
+      "title": "savedsearch"
+    },
+    "diff": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/diff",
+      "title": "diff"
+    },
+    "head": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/head",
+      "title": "head"
+    },
+    "typeahead": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/typeahead",
+      "title": "typeahead"
+    },
+    "overlap": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/overlap",
+      "title": "overlap"
+    },
+    "makecontinuous": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/makecontinuous",
+      "title": "makecontinuous"
+    },
+    "makeresults": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/makeresults",
+      "title": "makeresults"
+    },
+    "from": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/from",
+      "title": "from"
+    },
+    "erex": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/erex",
+      "title": "erex"
+    },
+    "replace": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/replace",
+      "title": "replace"
+    },
+    "where": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/where",
+      "title": "where"
+    },
+    "meventcollect": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/meventcollect",
+      "title": "meventcollect"
+    },
+    "metadata": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/metadata",
+      "title": "metadata"
+    },
+    "trendline": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/trendline",
+      "title": "trendline"
+    },
+    "uniq": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/uniq",
+      "title": "uniq"
+    },
+    "strcat": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/strcat",
+      "title": "strcat"
+    },
+    "map": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/map",
+      "title": "map"
+    },
+    "convert": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/convert",
+      "title": "convert"
+    },
+    "sendemail": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sendemail",
+      "title": "sendemail"
+    },
+    "outputcsv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/outputcsv",
+      "title": "outputcsv"
+    },
+    "correlate": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/correlate",
+      "title": "correlate"
+    },
+    "nomv": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/nomv",
+      "title": "nomv"
+    },
+    "associate": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/associate",
+      "title": "associate"
+    },
+    "filldown": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/filldown",
+      "title": "filldown"
+    },
+    "multisearch": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/multisearch",
+      "title": "multisearch"
+    },
+    "kvform": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/kvform",
+      "title": "kvform"
+    },
+    "sichart": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sichart",
+      "title": "sichart"
+    },
+    "cluster": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/cluster",
+      "title": "cluster"
+    },
+    "tail": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/tail",
+      "title": "tail"
+    },
+    "eventstats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/eventstats",
+      "title": "eventstats"
+    },
+    "stats": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/stats",
+      "title": "stats"
+    },
+    "search": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/search",
+      "title": "search"
+    },
+    "kmeans": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/kmeans",
+      "title": "kmeans"
+    },
+    "typer": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/typer",
+      "title": "typer"
+    },
+    "mvcombine": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/mvcombine",
+      "title": "mvcombine"
+    },
+    "lookup": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/lookup",
+      "title": "lookup"
+    },
+    "dedup": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/dedup",
+      "title": "dedup"
+    },
+    "delete": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/delete",
+      "title": "delete"
+    },
+    "sort": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/sort",
+      "title": "sort"
+    },
+    "extract": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/extract",
+      "title": "extract, kv"
+    },
+    "contingency": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/contingency",
+      "title": "contingency, counttable, ctable"
+    },
+    "localize": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/localize",
+      "title": "localize"
+    },
+    "rex": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rex",
+      "title": "rex"
+    },
+    "iconify": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/iconify",
+      "title": "iconify"
+    },
+    "analyzefields": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/analyzefields",
+      "title": "analyzefields"
+    },
+    "tojson": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/tojson",
+      "title": "tojson"
+    },
+    "transpose": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/transpose",
+      "title": "transpose"
+    },
+    "xpath": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/xpath",
+      "title": "xpath"
+    },
+    "pivot": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/pivot",
+      "title": "pivot"
+    },
+    "concurrency": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/concurrency",
+      "title": "concurrency"
+    },
+    "fieldsummary": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/fieldsummary",
+      "title": "fieldsummary"
+    },
+    "setfields": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/setfields",
+      "title": "setfields"
+    },
+    "walklex": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/walklex",
+      "title": "walklex"
+    },
+    "bucketdir": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/bucketdir",
+      "title": "bucketdir"
+    },
+    "script": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/script",
+      "title": "script"
+    },
+    "timewrap": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/timewrap",
+      "title": "timewrap"
+    },
+    "rest": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rest",
+      "title": "rest"
+    },
+    "history": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/history",
+      "title": "history"
+    },
+    "union": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/union",
+      "title": "union"
+    },
+    "folderize": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/folderize",
+      "title": "folderize"
+    },
+    "metasearch": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/metasearch",
+      "title": "metasearch"
+    },
+    "scrub": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/scrub",
+      "title": "scrub"
+    },
+    "highlight": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/highlight",
+      "title": "highlight"
+    },
+    "require": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/require",
+      "title": "require"
+    },
+    "fieldformat": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/fieldformat",
+      "title": "fieldformat"
+    },
+    "findtypes": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/findtypes",
+      "title": "findtypes"
+    },
+    "rtorder": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/rtorder",
+      "title": "rtorder"
+    },
+    "tscollect": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/tscollect",
+      "title": "tscollect"
+    },
+    "addcoltotals": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/addcoltotals",
+      "title": "addcoltotals"
+    },
+    "cofilter": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/cofilter",
+      "title": "cofilter"
+    },
+    "tags": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/tags",
+      "title": "tags"
+    },
+    "bin": {
+      "url": "https://help.splunk.com/en/splunk-enterprise/search/spl-search-reference/9.4/search-commands/bin",
+      "title": "bin"
+    },
+    "chart-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Chart-arguments",
+      "title": "chart-arguments"
+    },
+    "collapse": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Collapse",
+      "title": "collapse"
+    },
+    "copyresults": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Copyresults",
+      "title": "copyresults"
+    },
+    "createrss": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Createrss",
+      "title": "createrss"
+    },
+    "debug": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Debug",
+      "title": "debug"
+    },
+    "dispatch": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Dispatch",
+      "title": "dispatch"
+    },
+    "editinfo": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Editinfo",
+      "title": "editinfo"
+    },
+    "findkeywords": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Findkeywords",
+      "title": "findkeywords"
+    },
+    "fromjson": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Fromjson",
+      "title": "fromjson"
+    },
+    "tojson-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Tojson-arguments",
+      "title": "tojson-arguments"
+    },
+    "newseriesfilter": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Newseriesfilter",
+      "title": "newseriesfilter"
+    },
+    "nokv": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Nokv",
+      "title": "nokv"
+    },
+    "dump": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Dump",
+      "title": "dump"
+    },
+    "outputraw": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Outputraw",
+      "title": "outputraw"
+    },
+    "preview": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Preview",
+      "title": "preview"
+    },
+    "rare-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Rare-arguments",
+      "title": "rare-arguments"
+    },
+    "redistribute": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Redistribute",
+      "title": "redistribute"
+    },
+    "sendalert": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Sendalert",
+      "title": "sendalert"
+    },
+    "showargs": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Showargs",
+      "title": "showargs"
+    },
+    "mcatalog": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Mcatalog",
+      "title": "mcatalog"
+    },
+    "mrollup": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Mrollup",
+      "title": "mrollup"
+    },
+    "stats-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Stats-arguments",
+      "title": "stats-arguments"
+    },
+    "streamedcsv": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Streamedcsv",
+      "title": "streamedcsv"
+    },
+    "timechart-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Timechart-arguments",
+      "title": "timechart-arguments"
+    },
+    "top-arguments": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Top-arguments",
+      "title": "top-arguments"
+    },
+    "surrounding": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Surrounding",
+      "title": "surrounding"
+    },
+    "xmlunescape": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Xmlunescape",
+      "title": "xmlunescape"
+    },
+    "rawstats": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Rawstats",
+      "title": "rawstats"
+    },
+    "oldreturn": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Oldreturn",
+      "title": "oldreturn"
+    },
+    "runshellscript": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Runshellscript",
+      "title": "runshellscript"
+    },
+    "jsontxn": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Jsontxn",
+      "title": "jsontxn"
+    },
+    "ingestpreview": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Ingestpreview",
+      "title": "ingestpreview"
+    },
+    "prjob": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Prjob",
+      "title": "prjob"
+    },
+    "subsearch": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Subsearch",
+      "title": "subsearch"
+    },
+    "kv": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Kv",
+      "title": "kv"
+    },
+    "input": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Input",
+      "title": "input"
+    },
+    "relevancy": {
+      "url": "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Relevancy",
+      "title": "relevancy"
+    }
+  }
+}

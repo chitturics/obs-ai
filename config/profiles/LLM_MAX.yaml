@@ -1,0 +1,23 @@
+# LLM Profile: LLM_MAX
+# Edit this file to configure the corresponding feature.
+
+description: High-performance GPU deployment with best models
+hardware:
+  gpu_enabled: true
+  gpu_memory_gb: 8
+  min_ram_gb: 16
+  recommended_ram_gb: 32
+llm:
+  model: codellama:13b-instruct
+  spl_model: codellama:13b-instruct
+  embed_model: mxbai-embed-large
+  context_length: 16384
+  temperature: 0.1
+  spl_temperature: 0.05
+  top_p: 0.9
+  keep_alive: -1
+performance:
+  expected_query_time_seconds: 15
+  max_concurrent_queries: 4
+  chunk_batch_size: 50
+  embedding_workers: 4

@@ -1,0 +1,33 @@
+# Model Context Protocol Gateway
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+connection_timeout: 30
+max_retries: 2
+servers:
+- name: splunk-mcp
+  client_type: sse
+  endpoint: http://127.0.0.1:8181
+  auth_scheme: bearer
+  auth_hints:
+    header: Authorization
+    prefix: 'Bearer '
+  enabled: true
+  description: Local Splunk MCP server
+- name: github-mcp
+  client_type: streamable-http
+  endpoint: https://github.example.com/mcp
+  auth_scheme: bearer
+  auth_hints:
+    header: Authorization
+    prefix: 'Bearer '
+  enabled: false
+  description: GitHub MCP gateway
+- name: sharepoint-mcp
+  client_type: stdio
+  command: uvx sharepoint-mcp
+  auth_scheme: api_key
+  auth_hints:
+    env: SHAREPOINT_API_KEY
+  enabled: false
+  description: SharePoint MCP CLI

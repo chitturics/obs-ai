@@ -1,0 +1,11 @@
+# Knowledge Graph Settings
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+cache_path: /app/data/knowledge_graph.json
+max_context_facts: 8
+max_query_depth: 2
+rebuild_on_startup: false
+spl_docs_dir: /app/shared/public/documents/commands
+metadata_dir: /app/metadata
+spec_dir: /app/shared/public/documents/specs

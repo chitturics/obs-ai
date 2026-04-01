@@ -1,0 +1,1 @@
+import{u as e}from"./query-AOj6oMsZ.js";import{a as r}from"./index-2YTQSQPm.js";const a=()=>r("/dashboard");function t(){return e({queryKey:["dashboard"],queryFn:a,refetchInterval:3e4,staleTime:1e4})}export{t as u};

@@ -1,0 +1,11 @@
+# =============================================================================
+# FULL requirements - installs ALL tiers (base + med + max)
+# =============================================================================
+# For backward compatibility. Prefer tiered files for lighter builds:
+#   requirements.base.txt  -> LLM_LITE  (minimal, ~15 packages)
+#   requirements.med.txt   -> LLM_MED   (+ reranking, redis, prometheus)
+#   requirements.max.txt   -> LLM_MAX   (+ playwright, presidio, otel)
+
+-r requirements.base.txt
+-r requirements.med.txt
+-r requirements.max.txt

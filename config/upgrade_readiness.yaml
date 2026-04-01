@@ -1,0 +1,50 @@
+# Splunk Upgrade Readiness Analysis
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+repo_path: documents/repo/splunk
+download_cache: /app/data/splunkbase_downloads
+container_image: splunk/splunk:9.3.2
+container_cpus: 2
+container_memory: 4g
+max_test_duration: 600
+cim_version: 5.3.0
+auto_download: true
+clusters:
+  cluster-search:
+    splunk_version: 9.3.2
+    type: shc
+    apps_path: shcluster/cluster-search/apps
+  cluster-es:
+    splunk_version: 9.3.2
+    type: shc
+    apps_path: shcluster/cluster-es/apps
+    features:
+    - enterprise_security
+    - cim
+  cluster-itsi:
+    splunk_version: 9.3.2
+    type: shc
+    apps_path: shcluster/cluster-itsi/apps
+    features:
+    - itsi
+  cluster-dma:
+    splunk_version: 9.3.2
+    type: shc
+    apps_path: shcluster/cluster-dma/apps
+uf_testing:
+  enabled: true
+  uf_image: splunk/universalforwarder:9.3.2
+  indexer_image: splunk/splunk:9.3.2
+  test_event_count: 100
+  test_timeout_seconds: 120
+  forwarder_groups:
+  - name: cluster-prod-dc
+    description: Production domain controllers
+    apps_path: deployment-apps/cluster-prod-dc
+  - name: cluster-prod-web
+    description: Production web servers
+    apps_path: deployment-apps/cluster-prod-web
+  - name: _global
+    description: All forwarders
+    apps_path: deployment-apps/_global

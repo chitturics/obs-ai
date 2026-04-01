@@ -1,0 +1,14 @@
+# Security, Rate Limiting, CORS, Authentication
+# Edit this file to configure the corresponding feature.
+
+rate_limiting:
+  enabled: true
+  max_queries_per_minute: 10
+  max_queries_per_hour: 100
+cors:
+  enabled: true
+  allowed_origins:
+  - https://localhost:8000
+  - https://127.0.0.1:8000
+auth:
+  providers: []

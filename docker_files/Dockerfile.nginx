@@ -1,0 +1,13 @@
+# Nginx reverse proxy for Chainlit
+FROM docker.io/nginx:alpine
+
+# Copy nginx configuration (full nginx.conf, not just a site conf)
+COPY containers/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Create directory for Let's Encrypt verification
+RUN mkdir -p /var/www/certbot
+
+# Expose ports
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]

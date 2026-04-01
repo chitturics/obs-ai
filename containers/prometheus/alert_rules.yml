@@ -1,0 +1,121 @@
+groups:
+  - name: obsai_alerts
+    rules:
+      # ── Error rate (uses actual chainlit_queries_total metric) ──
+      - alert: HighErrorRate
+        expr: >
+          (rate(chainlit_queries_total{intent="error"}[5m])
+          / on() rate(chainlit_queries_total[5m]))
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          runbook: high_error_rate
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 5% for the last 5 minutes"
+          runbook_url: "/api/admin/runbooks/high_error_rate"
+
+      # ── High latency (uses actual chainlit_query_latency_seconds histogram) ──
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(chainlit_query_latency_seconds_bucket[5m])) > 10
+        for: 5m
+        labels:
+          severity: warning
+          runbook: latency_budget_exceeded
+        annotations:
+          summary: "High request latency (p95 > 10s)"
+          description: "95th percentile query latency is above 10 seconds"
+          runbook_url: "/api/admin/runbooks/latency_budget_exceeded"
+
+      # ── LLM service down (uses chainlit_service_up gauge) ──
+      - alert: OllamaDown
+        expr: chainlit_service_up{service="ollama"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          runbook: ollama_unhealthy
+        annotations:
+          summary: "Ollama LLM service is down"
+          description: "Ollama has been unreachable for 3+ minutes"
+          runbook_url: "/api/admin/runbooks/ollama_unhealthy"
+
+      # ── Vector store down ──
+      - alert: ChromaDBDown
+        expr: chainlit_service_up{service="chromadb"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          runbook: chromadb_unhealthy
+        annotations:
+          summary: "ChromaDB vector store is down"
+          description: "ChromaDB has been unreachable for 3+ minutes"
+          runbook_url: "/api/admin/runbooks/chromadb_unhealthy"
+
+      # ── Database down ──
+      - alert: PostgresDown
+        expr: chainlit_service_up{service="postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          runbook: postgres_unhealthy
+        annotations:
+          summary: "PostgreSQL database is down"
+          runbook_url: "/api/admin/runbooks/postgres_unhealthy"
+
+      # ── Redis down (non-critical — degrades to in-memory) ──
+      - alert: RedisDown
+        expr: chainlit_service_up{service="redis"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          runbook: redis_unhealthy
+        annotations:
+          summary: "Redis cache is down (degraded to in-memory)"
+          runbook_url: "/api/admin/runbooks/redis_unhealthy"
+
+      # ── SLO breach ──
+      - alert: SLOBreach
+        expr: chainlit_slo_status == 0
+        for: 10m
+        labels:
+          severity: critical
+          runbook: slo_breached
+        annotations:
+          summary: "SLO {{ $labels.slo_name }} is breached"
+          description: "SLO {{ $labels.slo_name }} has been below target for 10+ minutes"
+          runbook_url: "/api/admin/runbooks/slo_breached"
+
+      # ── Error budget exhausted ──
+      - alert: ErrorBudgetExhausted
+        expr: chainlit_slo_error_budget_remaining < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          runbook: slo_breached
+        annotations:
+          summary: "Error budget for {{ $labels.slo_name }} below 10%"
+          description: "Only {{ $value | humanizePercentage }} error budget remaining"
+
+      # ── Circuit breaker open ──
+      - alert: CircuitBreakerOpen
+        expr: chainlit_circuit_breaker_state == 2
+        for: 2m
+        labels:
+          severity: warning
+          runbook: high_error_rate
+        annotations:
+          summary: "Circuit breaker open for {{ $labels.service }}"
+          description: "Tool {{ $labels.service }} is disabled due to repeated failures"
+
+      # ── Service health (Prometheus scrape target down) ──
+      - alert: ServiceUnhealthy
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+          runbook: high_error_rate
+        annotations:
+          summary: "Prometheus target {{ $labels.job }} is down"
+          description: "Scrape target has been unhealthy for 2+ minutes"
+          runbook_url: "/api/admin/runbooks/high_error_rate"

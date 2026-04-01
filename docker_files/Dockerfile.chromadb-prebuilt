@@ -1,0 +1,19 @@
+# ChromaDB with Pre-built Collections
+FROM docker.io/chromadb/chroma:latest
+
+# Copy pre-built collections data
+COPY chroma_collections_backup/ /data/
+
+# Set permissions
+RUN chmod -R 755 /data
+
+ENV IS_PERSISTENT=TRUE
+ENV PERSIST_DIRECTORY=/data
+ENV ANONYMIZED_TELEMETRY=FALSE
+ENV CHROMA_SERVER_HOST=0.0.0.0
+ENV CHROMA_SERVER_HTTP_PORT=8001
+ENV ALLOW_RESET=TRUE
+
+EXPOSE 8001
+
+CMD ["uvicorn", "chromadb.app:app", "--host", "0.0.0.0", "--port", "8001"]

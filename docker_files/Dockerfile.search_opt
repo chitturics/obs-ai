@@ -1,0 +1,66 @@
+# Search Optimization Service
+# Lightweight container for SPL query validation, optimization, and NLP-to-SPL
+
+# ============================================================================
+# Stage 1: Builder
+# ============================================================================
+FROM docker.io/python:3.11-slim as builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Create a virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Dependencies first (layer caching)
+COPY containers/search_opt/requirements.txt /app/requirements.txt
+COPY containers/search_opt/requirements.extra.txt /app/requirements.extra.txt
+ARG WITH_SQL_LINT=false
+RUN pip install --no-cache-dir -r /app/requirements.txt && \
+    if [ "$WITH_SQL_LINT" = "true" ]; then \
+      pip install --no-cache-dir -r /app/requirements.extra.txt; \
+    fi
+
+# ============================================================================
+# Stage 2: Final Image
+# ============================================================================
+FROM docker.io/python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0 \
+    PORT=9005 \
+    PATH="/opt/venv/bin:$PATH"
+
+# Create a non-root user
+RUN groupadd --gid 1002 search_opt_group && \
+    useradd --uid 1002 --gid 1002 -ms /bin/bash search_opt_user
+
+RUN mkdir -p /app/data && \
+    chown -R search_opt_user:search_opt_group /app
+
+# Copy dependencies from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy shared library and service code
+COPY shared /app/shared
+COPY containers/__init__.py /app/containers/__init__.py
+COPY containers/search_opt /app/containers/search_opt
+
+# Copy Splunk documentation (commands + specs) for knowledge enrichment
+COPY documents/commands /app/documents/commands
+COPY documents/specs /app/documents/specs
+
+# Set ownership
+RUN chown -R search_opt_user:search_opt_group /app
+
+USER search_opt_user
+
+EXPOSE 9005
+
+CMD ["uvicorn", "containers.search_opt.app:app", "--host", "0.0.0.0", "--port", "9005"]

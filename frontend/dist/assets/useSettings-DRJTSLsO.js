@@ -1,0 +1,1 @@
+import{u as n,b as i,c as u}from"./query-AOj6oMsZ.js";import{n as a,a as r}from"./index-2YTQSQPm.js";const o=()=>r("/settings"),c=(t,e)=>a(`/settings/${t}`,{values:e});function S(){return n({queryKey:["settings"],queryFn:o})}function f(t){const e=i();return u({mutationFn:s=>c(t,s),onSuccess:()=>e.invalidateQueries({queryKey:["settings"]})})}export{f as a,S as u};

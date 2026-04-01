@@ -1,0 +1,87 @@
+[project]
+name = "splunk-admin-assistant"
+version = "1.0.0"
+description = "Chainlit-based Splunk Admin AI Assistant with RAG, SPL optimization, and NLP-to-SPL generation"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    "chainlit>=1.0.0",
+    "langchain>=0.1.0",
+    "langchain-ollama>=0.1.0",
+    "langchain-core>=0.1.0",
+    "sqlalchemy>=2.0.20",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.10",
+    "chromadb>=0.4.0",
+    "langchain-chroma>=0.1.0",
+    "langchain-text-splitters>=0.1.0",
+    "pypdf>=4.0.0",
+    "beautifulsoup4>=4.12.0",
+    "tiktoken>=0.5.0",
+    "redis[hiredis]>=5.0.0",
+    "tenacity>=8.2.0",
+    "prometheus-client>=0.19.0",
+    "httpx>=0.25.0",
+    "requests>=2.31.0",
+    "splunk-sdk>=1.7.3",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.1",
+    "tqdm>=4.66.0",
+    "sentence-transformers>=2.2.0",
+]
+
+[project.optional-dependencies]
+full = [
+    "playwright>=1.40.0",
+    "cloudscraper>=1.2.71",
+    "transformers>=4.34.0",
+    "datasets>=2.14.0",
+    "safetensors>=0.3.0",
+    "accelerate>=0.20.3",
+    "huggingface_hub>=0.16.6",
+    "peft",
+    "bitsandbytes",
+    "presidio-analyzer>=2.2.0",
+    "presidio-anonymizer>=2.2.0",
+]
+monitoring = [
+    "opentelemetry-api>=1.21.0",
+    "opentelemetry-sdk>=1.21.0",
+    "opentelemetry-instrumentation-sqlalchemy>=0.42b0",
+    "opentelemetry-instrumentation-requests>=0.42b0",
+    "opentelemetry-exporter-otlp>=1.21.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+markers = [
+    "unit: Unit tests (fast, isolated)",
+    "integration: Integration tests (test real wiring between modules)",
+    "e2e: End-to-end tests (full pipeline)",
+]
+
+[tool.coverage.run]
+source = ["chat_app"]
+omit = ["chat_app/eval_*", "chat_app/generate_*", "chat_app/export_*"]
+
+[tool.coverage.report]
+show_missing = false
+precision = 1
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]

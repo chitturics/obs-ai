@@ -1,0 +1,379 @@
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    sendfile      on;
+    keepalive_timeout 65;
+    client_max_body_size 50m;
+
+    # Request ID for tracing correlation
+    map $http_x_request_id $req_id {
+        default   $http_x_request_id;
+        ""        $request_id;
+    }
+
+    # Logging with request ID
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for" '
+                    'rid=$req_id rt=$request_time';
+    access_log /var/log/nginx/access.log main;
+    error_log  /var/log/nginx/error.log warn;
+
+    # Security headers — comprehensive OWASP compliance
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    # Content-Security-Policy with per-request nonce (SEC-03).
+    #
+    # Nonce strategy: nginx $request_id generates a unique hex string per request.
+    # The nonce is injected into <script> tags via sub_filter in location blocks
+    # that serve HTML (see the / and /api/ locations below).
+    #
+    # script-src breakdown:
+    #   'nonce-$request_id'  — allows only scripts bearing this request's nonce
+    #   'strict-dynamic'     — scripts loaded by a nonce-trusted script are also
+    #                          trusted (covers dynamic imports, chunk loading)
+    #   'unsafe-eval'        — REQUIRED: echarts (admin charts) uses new Function()
+    #                          and the Vite-built React SPA uses eval for source maps.
+    #                          Removing this breaks chart rendering and dev tooling.
+    #                          Residual risk: eval-based XSS if attacker controls a
+    #                          string passed to eval(). Mitigated by nonce (attacker
+    #                          cannot inject <script> tags) and input sanitization.
+    #   'unsafe-inline'      — FALLBACK ONLY: modern browsers that support
+    #                          'strict-dynamic' ignore 'unsafe-inline' entirely.
+    #                          Kept for older browsers that don't understand nonces.
+    #   https://cdn.jsdelivr.net — CDN allowlist (also ignored when 'strict-dynamic'
+    #                          is active, but kept for legacy browser fallback)
+    #
+    # style-src: 'unsafe-inline' is required — React/Chainlit inject inline styles
+    # via style="" attributes and <style> tags. CSS nonces are not practical here
+    # because the app framework generates styles at runtime.
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-$request_id' 'strict-dynamic' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' data: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' ws: wss:; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Permitted-Cross-Domain-Policies "none" always;
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Resource-Policy "same-origin" always;
+    add_header Cross-Origin-Embedder-Policy "credentialless" always;
+
+    # Hide server version
+    server_tokens off;
+
+    # Rate limiting zones
+    limit_req_zone $binary_remote_addr zone=api:10m rate=30r/s;
+    limit_req_zone $binary_remote_addr zone=general:10m rate=60r/s;
+    limit_req_zone $binary_remote_addr zone=health:5m rate=5r/s;
+
+    # Gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+    gzip_min_length 256;
+
+    # ---- HTTPS server block (primary — listens on gateway port) ----
+    server {
+        listen ${NGINX_LISTEN_PORT} ssl;
+        server_name _;
+
+        # Return 429 (not default 503) when rate limit is exceeded
+        limit_req_status 429;
+
+        ssl_certificate     /etc/nginx/certs/cert.pem;
+        ssl_certificate_key /etc/nginx/certs/key.pem;
+        ssl_protocols       TLSv1.2 TLSv1.3;
+        ssl_ciphers         HIGH:!aNULL:!MD5:!RC4;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache   shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        # Security headers (repeated at server level for location blocks that
+        # define their own add_header and thus lose http-level inheritance)
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # ---- Health/readiness probes (tighter rate limit to prevent abuse) ----
+        location = /live {
+            limit_req zone=health burst=3 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+        }
+        location = /ready {
+            limit_req zone=health burst=3 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+        }
+        location = /health {
+            limit_req zone=health burst=3 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+        }
+        # /metrics — Prometheus metrics endpoint
+        location = /metrics {
+            limit_req zone=health burst=3 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+        }
+
+        # ---- Chainlit app (default) ----
+        location / {
+            limit_req zone=general burst=20 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Request-ID $req_id always;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+            add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+            proxy_read_timeout 300s;
+            proxy_send_timeout 300s;
+
+            # CSP nonce injection: rewrite <script> tags in HTML responses to
+            # include nonce="$request_id". sub_filter runs on the response body
+            # and inserts the per-request nonce so browsers can trust these scripts.
+            # Accept-Encoding "" ensures upstream sends uncompressed HTML so
+            # sub_filter can match. Nginx still gzip-compresses to the client.
+            proxy_set_header Accept-Encoding "";
+            sub_filter_once off;
+            # sub_filter_types defaults to text/html
+            sub_filter '<script' '<script nonce="$request_id"';
+        }
+
+        # ---- Standalone Admin UI (served directly by nginx, survives app restart) ----
+        location /api/admin/v2/ {
+            alias /usr/share/nginx/admin-ui/;
+            try_files $uri $uri/ /api/admin/v2/index.html;
+            # HTML: always revalidate. JS/CSS: cache with hash-based filenames.
+            add_header Cache-Control "no-cache, must-revalidate";
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            # Inject CSP nonce into HTML
+            sub_filter_once off;
+            # sub_filter_types defaults to text/html
+            sub_filter '<script' '<script nonce="$request_id"';
+        }
+
+        # ---- Admin API ----
+        location /api/ {
+            limit_req zone=api burst=10 nodelay;
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Request-ID $req_id;
+            add_header X-Request-ID $req_id always;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+            add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 300s;
+            proxy_read_timeout 300s;
+
+            # CSP nonce injection for admin console HTML pages
+            proxy_set_header Accept-Encoding "";
+            sub_filter_once off;
+            # sub_filter_types defaults to text/html
+            sub_filter '<script' '<script nonce="$request_id"';
+        }
+
+        # ---- WebSocket ----
+        location /ws {
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 300s;
+            proxy_send_timeout 300s;
+        }
+
+        # ---- Grafana (/grafana/) ----
+        # Grafana runs with GF_SERVER_SERVE_FROM_SUB_PATH=true, so it expects /grafana/ prefix
+        # SEC: Grafana has its own auth (admin/password). Access via HTTPS gateway only.
+        location /grafana/ {
+            limit_req zone=api burst=10 nodelay;
+            proxy_pass http://127.0.0.1:${GRAFANA_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # ---- Prometheus (/prometheus/) ----
+        # SEC: Access via HTTPS gateway only. Consider adding auth for production.
+        location /prometheus/ {
+            limit_req zone=api burst=10 nodelay;
+            rewrite ^/prometheus/(.*) /$1 break;
+            proxy_pass http://127.0.0.1:${PROMETHEUS_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # ---- Search Optimizer docs (/search-opt/) ----
+        location /search-opt/ {
+            limit_req zone=api burst=10 nodelay;
+            rewrite ^/search-opt/(.*) /$1 break;
+            proxy_pass http://127.0.0.1:${SEARCH_OPT_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        # ---- Langfuse LLM Observability (/langfuse/) ----
+        location /langfuse/ {
+            limit_req zone=api burst=10 nodelay;
+            rewrite ^/langfuse/(.*) /$1 break;
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 300s;
+        }
+
+        # ---- Langfuse assets & internal API (served from root by Next.js) ----
+        location /_next/ {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+        location /icon.svg {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_set_header Host $host;
+        }
+        # Chainlit auth endpoints (must come before Langfuse /auth/ catch-all)
+        location /auth/config {
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /auth/login {
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /auth/logout {
+            proxy_pass http://127.0.0.1:${APP_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        # Langfuse NextAuth sign-in / callback pages (catch-all for remaining /auth/ routes)
+        location /auth/ {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        # Langfuse auth & tracing API
+        location /api/auth/ {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /api/public/ {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /api/trpc/ {
+            proxy_pass http://127.0.0.1:${LANGFUSE_PORT};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Health check
+        location /nginx-health {
+            access_log off;
+            return 200 '{"status":"ok","service":"nginx-gateway"}';
+            add_header Content-Type application/json;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+            add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+        }
+
+        # Block direct access to internal ports documentation
+        location /internal-ports {
+            return 403 '{"error":"Internal ports should not be accessed directly. Use the gateway."}';
+            add_header Content-Type application/json;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+            add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+        }
+
+        # Block access to sensitive paths — return 404 not SPA HTML
+        location ~ /\.(env|git|claude|ssh|aws|config) {
+            return 404;
+        }
+        location ~ ^/(\.env|\.git|config\.yaml|docker_files) {
+            return 404;
+        }
+    }
+
+}

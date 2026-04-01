@@ -1,0 +1,230 @@
+# ==============================================================================
+# ObsAI .gitignore — keep source code, exclude runtime data & large binaries
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Python
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.installed.cfg
+.Python
+
+# ------------------------------------------------------------------------------
+# Virtual Environments
+# ------------------------------------------------------------------------------
+venv/
+.venv/
+env/
+ENV/
+
+# ------------------------------------------------------------------------------
+# Node.js
+# ------------------------------------------------------------------------------
+node_modules/
+.npm/
+.yarn/
+
+# ------------------------------------------------------------------------------
+# Build Artifacts (keep frontend/dist — pre-built admin UI for Docker)
+# ------------------------------------------------------------------------------
+build/
+dist/
+!frontend/dist/
+sdist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+var/
+wheels/
+
+# ------------------------------------------------------------------------------
+# IDE & Editor
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------------------------------------------------------------
+# OS Artifacts
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------------------------
+# Secrets, Certificates & Environment
+# ------------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.template
+docker_files/.env
+secrets/
+*.pem
+*.key
+*.crt
+
+# ------------------------------------------------------------------------------
+# Runtime Data & Volumes (generated at runtime, not source)
+# ------------------------------------------------------------------------------
+chroma_store/
+chroma_data/
+data/
+postgres_data/
+ollama_models/
+llms/
+
+# ------------------------------------------------------------------------------
+# Large Binary Files (use volume mounts or Git LFS)
+# ------------------------------------------------------------------------------
+documents/pdfs/
+*.gguf
+*.bin
+*.safetensors
+*.jsonl
+
+# ------------------------------------------------------------------------------
+# Training & Generated Data
+# ------------------------------------------------------------------------------
+training/
+training_data/
+qa_dataset/
+
+# ------------------------------------------------------------------------------
+# Logs & Temp
+# ------------------------------------------------------------------------------
+*.log
+logs/
+*.log.*
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ------------------------------------------------------------------------------
+# Backups
+# ------------------------------------------------------------------------------
+backups/
+config_backups/
+
+# ------------------------------------------------------------------------------
+# Test & Coverage
+# ------------------------------------------------------------------------------
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# ------------------------------------------------------------------------------
+# Chainlit Runtime
+# ------------------------------------------------------------------------------
+.chainlit/
+.files/
+
+# ------------------------------------------------------------------------------
+# Claude Code (local agent state)
+# ------------------------------------------------------------------------------
+.claude/
+
+# ------------------------------------------------------------------------------
+# Generated Feedback
+# ------------------------------------------------------------------------------
+public/feedback/
+feedback/*.html
+
+# ------------------------------------------------------------------------------
+# Duplicate / Generated Docs
+# ------------------------------------------------------------------------------
+spl_docs/
+
+# ------------------------------------------------------------------------------
+# Misc
+# ------------------------------------------------------------------------------
+.dockerignore
+splunk_advanced_docs/
+
+# MCP Server (development tool, not for production)
+mcp_server.py
+
+# MCP config (contains API keys)
+.mcp.json
+
+# Generated env files with secrets
+docker_files/.env.generated
+
+# Audit reports (generated, not source)
+reports/
+
+# Certificates
+certs/*.pem
+certs/*.key
+certs/*.crt
+
+# Generated nginx config (rebuilt at runtime from template)
+containers/nginx/nginx.generated.conf
+
+# TODO files (planning, not production)
+TODO*.md
+
+# ------------------------------------------------------------------------------
+# Organization-Specific Data (NEVER commit — contains hostnames, IPs, passwords)
+# ------------------------------------------------------------------------------
+# Splunk deployment repo (contains org server names, encrypted passwords, IPs)
+documents/repo/
+# Splunkbase catalog (large, generated — use scripts/fetch_splunkbase_catalog.py)
+documents/splunkbase_catalog.json
+# PDFs (large binary files)
+documents/pdfs/
+# Feedback data (may contain user queries)
+feedback/liked_queries.json
+feedback/*.json
+# ChromaDB local store (runtime data)
+chroma_store/
+# Config backup files
+config.yaml.bak
+config.yaml.backup
+*.yaml.bak
+
+# ------------------------------------------------------------------------------
+# Runtime Logs
+# ------------------------------------------------------------------------------
+ingest_background.log
+*.log
+
+# ------------------------------------------------------------------------------
+# Certificates & Keys (NEVER commit private keys)
+# ------------------------------------------------------------------------------
+certs/
+!certs/README.md
+
+# ------------------------------------------------------------------------------
+# Generated/Cached Data
+# ------------------------------------------------------------------------------
+# Inventory cache (rebuilt on scan)
+data/inventory_response.json
+data/scan_cache.json
+data/splunkbase_catalog.json
+# Security advisories cache
+data/security_advisories/
+
+# ------------------------------------------------------------------------------
+# Docker/Podman runtime
+# ------------------------------------------------------------------------------
+docker_files/.env
+docker_files/.env.generated
+docker_files/.env.local

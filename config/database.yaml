@@ -1,0 +1,20 @@
+# Database Connections (PostgreSQL, ChromaDB)
+# Edit this file to configure the corresponding feature.
+
+postgres:
+  host: 127.0.0.1
+  port: 5432
+  database: chainlit
+  user: chainlit
+  max_connections: 20
+  connection_timeout: 30
+chromadb:
+  host: 127.0.0.1
+  port: 8001
+  telemetry: false
+  allow_reset: false
+  persist: true
+  collections:
+    primary: assistant_memory_mxbai_v2
+    specs: specs_mxbai_embed_large_v3
+    feedback: feedback_qa_mxbai_embed_large

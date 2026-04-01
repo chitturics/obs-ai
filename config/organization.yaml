@@ -1,0 +1,53 @@
+# Organization-Specific Mappings
+# Edit this file to configure the corresponding feature.
+
+config_paths:
+- documents/repo/splunk/
+- ingest_specs/
+index_mappings:
+  authentication: wineventlog
+  network: firewall
+  web: proxy
+  dns: dns
+  endpoint: main
+  email: exchange
+field_mappings:
+  user: user
+  source_ip: src_ip
+  destination_ip: dest_ip
+  action: action
+  status: status
+additional_cim_models:
+  Email:
+    indicators:
+    - email
+    - smtp
+    - exchange
+    - message
+    dataset: All_Email
+    fields:
+      sender: Email.All_Email.src_user
+      recipient: Email.All_Email.recipient
+  IDS_Attacks:
+    indicators:
+    - ids
+    - ips
+    - intrusion
+    - attack
+    - snort
+    - suricata
+    dataset: Attack_Detection
+    fields:
+      signature: IDS_Attacks.Attack_Detection.signature
+      category: IDS_Attacks.Attack_Detection.category
+  Malware:
+    indicators:
+    - malware
+    - antivirus
+    - av
+    - virus
+    - trojan
+    dataset: Malware_Attacks
+    fields:
+      file_name: Malware.Malware_Attacks.file_name
+      signature: Malware.Malware_Attacks.signature

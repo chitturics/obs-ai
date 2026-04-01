@@ -1,0 +1,457 @@
+# ObsAI Configuration (Legacy single-file format)
+# PREFERRED: Use config/ directory for Splunk-style per-file configuration.
+# This file is used as fallback when config/ directory is not present.
+# See config/ for the split configuration files.
+
+active_profile: LLM_LITE
+profiles:
+  LLM_LITE:
+    description: Fast CPU-only deployment with small models
+    hardware:
+      gpu_enabled: false
+      min_ram_gb: 8
+      recommended_ram_gb: 16
+    llm:
+      model: qwen2.5:3b
+      spl_model: qwen2.5:3b
+      embed_model: mxbai-embed-large
+      context_length: 2048
+      temperature: 0.01
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 30
+      max_concurrent_queries: 2
+      chunk_batch_size: 10
+      embedding_workers: 1
+  LLM_MED:
+    description: Balanced deployment with Qwen2.5-Coder 7B for SPL/code generation
+    hardware:
+      gpu_enabled: false
+      min_ram_gb: 12
+      recommended_ram_gb: 16
+    llm:
+      model: qwen2.5-coder:7b
+      spl_model: qwen2.5-coder:7b
+      embed_model: mxbai-embed-large
+      context_length: 8192
+      temperature: 0.1
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 120
+      max_concurrent_queries: 1
+      chunk_batch_size: 10
+      embedding_workers: 1
+  LLM_MAX:
+    description: High-performance GPU deployment with best models
+    hardware:
+      gpu_enabled: true
+      gpu_memory_gb: 8
+      min_ram_gb: 16
+      recommended_ram_gb: 32
+    llm:
+      model: codellama:13b-instruct
+      spl_model: codellama:13b-instruct
+      embed_model: mxbai-embed-large
+      context_length: 16384
+      temperature: 0.1
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 15
+      max_concurrent_queries: 4
+      chunk_batch_size: 50
+      embedding_workers: 4
+directories:
+  host_base_path: /mnt/c/tools
+  app_root: /app
+  chroma_store: /app/chroma_store
+  specs_chroma_store: /app/specs_chroma_store
+  feedback: /app/public/feedback
+  static_specs: /app/static_specs
+  static_docs: /app/static_docs
+  local_documents_source: /mnt/c/tools/documents/splunk
+  logs: /app/logs
+  temp: /tmp
+  backups: /app/backups
+database:
+  postgres:
+    host: 127.0.0.1
+    port: 5432
+    database: chainlit
+    user: chainlit
+    max_connections: 20
+    connection_timeout: 30
+  chromadb:
+    host: 127.0.0.1
+    port: 8001
+    telemetry: false
+    allow_reset: false
+    persist: true
+    collections:
+      primary: assistant_memory_mxbai_v2
+      specs: specs_mxbai_embed_large_v3
+      feedback: feedback_qa_mxbai_embed_large
+ingestion:
+  chunking:
+    spec_files:
+      chunk_size: 800
+      chunk_overlap: 200
+    documents:
+      chunk_size: 900
+      chunk_overlap: 400
+  allowed_extensions:
+  - .spec
+  - .conf
+  - .txt
+  - .md
+  - .json
+  - .yaml
+  - .yml
+  - .xml
+  - .toml
+  - .log
+  - .ini
+  - .cfg
+  - .pdf
+  performance:
+    max_workers: 4
+    batch_size: 1000
+    max_file_size_mb: 50
+    skip_dedup: false
+    force_reindex: false
+  specs:
+    repo_url: https://github.com/jewnix/splunk-spec-files.git
+    branch: splunk-9.4.3-237ebbd22314
+    clone_depth: 1
+retrieval:
+  top_k:
+    feedback: 3
+    specs: 5
+    primary: 5
+  similarity_threshold:
+    feedback: 0.7
+    specs: 0.6
+    primary: 0.6
+  strategy: multi_collection
+  compound_queries:
+    enabled: true
+    detection_method: regex
+    max_sub_queries: 5
+  k_multiplier: 3
+prompts:
+  default_splunk_version: 9.5.4
+  default_time_range: last 15 minutes
+  strict_mode: true
+  require_sources: true
+  max_response_length: 2000
+  temperatures:
+    query_generation: 0.1
+    response_synthesis: 0.2
+    summarization: 0.3
+ui:
+  framework: chainlit
+  host: 0.0.0.0
+  port: 8000
+  ssl:
+    enabled: true
+    cert_file: ''
+    key_file: ''
+    ca_file: ''
+  session_timeout_minutes: 120
+  max_message_length: 5000
+  features:
+    feedback_enabled: true
+    export_enabled: true
+    settings_panel: true
+    chat_history: true
+  title: Splunk Assistant
+  description: AI-powered Splunk documentation and configuration helper
+ports:
+  app: 8090
+  gateway: 8000
+  gateway_ssl: 8443
+  ollama: 11430
+  chromadb: 8001
+  postgres: 5432
+  redis: 6379
+  search_opt: 9005
+  grafana: 3100
+  prometheus: 9090
+  hoppscotch: 3170
+security:
+  rate_limiting:
+    enabled: true
+    max_queries_per_minute: 10
+    max_queries_per_hour: 100
+  cors:
+    enabled: true
+    allowed_origins:
+    - https://localhost:8000
+    - https://127.0.0.1:8000
+features:
+  hybrid_search: true
+  query_caching: true
+  response_streaming: true
+  auto_feedback_collection: true
+  reranking: true
+  query_expansion: true
+  hyde: true
+  compound_query_detection: true
+  prometheus_metrics: true
+  health_checks: true
+  circuit_breakers: true
+  retry_with_backoff: true
+  fallback_responses: true
+  docling_processing: false
+  splunkbase_catalog: true
+orchestration:
+  default_strategy: adaptive
+  max_iterations: 3
+  max_parallel_agents: 3
+  quality_threshold: 0.7
+  max_duration_seconds: 30.0
+  resource_fallback: true
+  critic_enabled: true
+  human_approval_intents: []
+  strategy_overrides:
+    spl_generation: single_agent
+    spl_optimization: single_agent
+    spl_explanation: single_agent
+    spl_validation: single_agent
+    general_qa: single_agent
+    greeting: single_agent
+    command_help: single_agent
+    data_transform: single_agent
+  director_graph:
+    max_hops: 10
+    default_template: director_loop
+  action_engine:
+    max_actions: 15
+    timeout_per_action: 10
+idle_worker:
+  enabled: true
+  idle_threshold_seconds: 60
+  min_cycle_interval: 300
+  max_tasks_per_cycle: 12
+  config_drift_interval: 300
+  collection_freshness_interval: 600
+  pipeline_quality_interval: 900
+  max_results_history: 200
+docling:
+  enabled: false
+  base_url: http://127.0.0.1:5001
+  timeout: 300
+  ocr_enabled: false
+  extract_tables: true
+  chunk_tokens: 250
+  overlap_tokens: 40
+  max_doc_size_mb: 100
+splunk:
+  splunk_verify_ssl: true
+  splunk_ca_bundle: ''
+splunkbase_catalog:
+  enabled: true
+  catalog_path: /app/data/splunkbase_catalog.json
+  update_schedule: daily
+  splunk_url: ''
+  splunk_token: ''
+  max_apps_per_fetch: 0
+  include_private: false
+  auto_compare: true
+knowledge_graph:
+  enabled: true
+  cache_path: /app/data/knowledge_graph.json
+  max_context_facts: 8
+  max_query_depth: 2
+  rebuild_on_startup: false
+  spl_docs_dir: /app/shared/public/documents/commands
+  metadata_dir: /app/metadata
+  spec_dir: /app/shared/public/documents/specs
+mcp_gateway:
+  enabled: true
+  connection_timeout: 30
+  max_retries: 2
+  servers:
+  - name: splunk-mcp
+    client_type: sse
+    endpoint: http://127.0.0.1:8181
+    auth_scheme: bearer
+    auth_hints:
+      header: Authorization
+      prefix: 'Bearer '
+    enabled: true
+    description: Local Splunk MCP server
+  - name: github-mcp
+    client_type: streamable-http
+    endpoint: https://github.example.com/mcp
+    auth_scheme: bearer
+    auth_hints:
+      header: Authorization
+      prefix: 'Bearer '
+    enabled: false
+    description: GitHub MCP gateway
+  - name: sharepoint-mcp
+    client_type: stdio
+    command: uvx sharepoint-mcp
+    auth_scheme: api_key
+    auth_hints:
+      env: SHAREPOINT_API_KEY
+    enabled: false
+    description: SharePoint MCP CLI
+sharepoint:
+  enabled: false
+  tenant_id: Set via ENV
+  client_id: Set via ENV
+  client_secret: '****'
+  site_url: https://yourcompany.sharepoint.com/sites/YourSite
+  ingestion:
+    include_libraries: []
+    exclude_libraries:
+    - Form Templates
+    - Site Assets
+    - Style Library
+    max_docs_per_library: null
+    sync_schedule: 0 2 * * *
+    incremental: true
+  collection:
+    name: sharepoint_docs
+    description: SharePoint document library content
+  collection_name: sharepoint_docs
+  collection_description: SharePoint document library content
+github:
+  enabled: false
+  repo_url: https://github.com/yourorg/yourrepo
+  token: Set via ENV
+  branches:
+  - main
+  - develop
+  include_patterns:
+  - '*.md'
+  - '*.py'
+  - '*.yml'
+  - '*.yaml'
+  - '*.json'
+  - docs/**/*
+  - config/**/*
+  exclude_patterns:
+  - node_modules/**
+  - venv/**
+  - '*.pyc'
+  - __pycache__/**
+  ingestion:
+    sync_schedule: 0 */4 * * *
+    incremental: true
+  collection:
+    name: github_repo
+    description: GitHub repository content
+organization:
+  config_paths:
+  - documents/repo/splunk/
+  - ingest_specs/
+  index_mappings:
+    authentication: wineventlog
+    network: firewall
+    web: proxy
+    dns: dns
+    endpoint: main
+    email: exchange
+  field_mappings:
+    user: user
+    source_ip: src_ip
+    destination_ip: dest_ip
+    action: action
+    status: status
+  additional_cim_models:
+    Email:
+      indicators:
+      - email
+      - smtp
+      - exchange
+      - message
+      dataset: All_Email
+      fields:
+        sender: Email.All_Email.src_user
+        recipient: Email.All_Email.recipient
+    IDS_Attacks:
+      indicators:
+      - ids
+      - ips
+      - intrusion
+      - attack
+      - snort
+      - suricata
+      dataset: Attack_Detection
+      fields:
+        signature: IDS_Attacks.Attack_Detection.signature
+        category: IDS_Attacks.Attack_Detection.category
+    Malware:
+      indicators:
+      - malware
+      - antivirus
+      - av
+      - virus
+      - trojan
+      dataset: Malware_Attacks
+      fields:
+        file_name: Malware.Malware_Attacks.file_name
+        signature: Malware.Malware_Attacks.signature
+auth:
+  providers: []
+langfuse:
+  enabled: true
+  host: http://localhost:3200
+  public_key: pk-obsai-dev
+  secret_key: sk-obsai-dev
+upgrade_readiness:
+  enabled: true
+  repo_path: documents/repo/splunk
+  download_cache: /app/data/splunkbase_downloads
+  container_image: splunk/splunk:9.3.2
+  container_cpus: 2
+  container_memory: 4g
+  max_test_duration: 600
+  cim_version: 5.3.0
+  auto_download: true
+  clusters:
+    cluster-search:
+      splunk_version: 9.3.2
+      type: shc
+      apps_path: shcluster/cluster-search/apps
+    cluster-es:
+      splunk_version: 9.3.2
+      type: shc
+      apps_path: shcluster/cluster-es/apps
+      features:
+      - enterprise_security
+      - cim
+    cluster-itsi:
+      splunk_version: 9.3.2
+      type: shc
+      apps_path: shcluster/cluster-itsi/apps
+      features:
+      - itsi
+    cluster-dma:
+      splunk_version: 9.3.2
+      type: shc
+      apps_path: shcluster/cluster-dma/apps
+  uf_testing:
+    enabled: true
+    uf_image: splunk/universalforwarder:9.3.2
+    indexer_image: splunk/splunk:9.3.2
+    test_event_count: 100
+    test_timeout_seconds: 120
+    forwarder_groups:
+    - name: cluster-prod-dc
+      description: Production domain controllers
+      apps_path: deployment-apps/cluster-prod-dc
+    - name: cluster-prod-web
+      description: Production web servers
+      apps_path: deployment-apps/cluster-prod-web
+    - name: _global
+      description: All forwarders
+      apps_path: deployment-apps/_global

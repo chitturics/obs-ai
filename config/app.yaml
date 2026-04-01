@@ -1,0 +1,35 @@
+# ObsAI Application Settings
+# Edit this file to configure the corresponding feature.
+
+active_profile: LLM_LITE
+version: 4.0.1
+ui:
+  framework: chainlit
+  host: 0.0.0.0
+  port: 8000
+  ssl:
+    enabled: true
+    cert_file: ''
+    key_file: ''
+    ca_file: ''
+  session_timeout_minutes: 120
+  max_message_length: 5000
+  features:
+    feedback_enabled: true
+    export_enabled: true
+    settings_panel: true
+    chat_history: true
+  title: Splunk Assistant
+  description: AI-powered Splunk documentation and configuration helper
+ports:
+  app: 8090
+  gateway: 8000
+  gateway_ssl: 8443
+  ollama: 11430
+  chromadb: 8001
+  postgres: 5432
+  redis: 6379
+  search_opt: 9005
+  grafana: 3100
+  prometheus: 9090
+  hoppscotch: 3170

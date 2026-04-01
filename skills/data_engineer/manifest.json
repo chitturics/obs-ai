@@ -1,0 +1,111 @@
+{
+  "name": "data_engineer",
+  "version": "1.0.0",
+  "description": "Data pipeline skill for analyzing data flows, suggesting field transforms, validating CIM data models, and designing index strategies.",
+  "author": "ObsAI Team",
+  "category": "integration",
+  "tags": ["data", "pipeline", "ETL", "ingestion"],
+  "icon": "database",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "default_index": {
+      "type": "string",
+      "description": "Default index name for strategy suggestions",
+      "default": "main"
+    },
+    "max_volume_gb": {
+      "type": "number",
+      "description": "Maximum daily ingest volume in GB for planning",
+      "default": 500
+    }
+  },
+  "actions": [
+    {
+      "name": "analyze_data_flow",
+      "description": "Analyze data flow from source to index, identify bottlenecks and suggest improvements for ingestion pipelines.",
+      "parameters": {
+        "description": {
+          "type": "string",
+          "description": "Description of the data flow including sources, forwarders, and destinations",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["data_flow", "pipeline", "ingestion"],
+      "requires": []
+    },
+    {
+      "name": "suggest_transforms",
+      "description": "Suggest field transforms, extractions, and enrichments for data based on field names and sourcetype.",
+      "parameters": {
+        "fields": {
+          "type": "string",
+          "description": "Comma-separated list of field names to analyze",
+          "required": true
+        },
+        "sourcetype": {
+          "type": "string",
+          "description": "The sourcetype of the data",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["transforms", "extractions", "props"],
+      "requires": []
+    },
+    {
+      "name": "validate_data_model",
+      "description": "Validate a CIM data model mapping against actual data fields to ensure compliance.",
+      "parameters": {
+        "data_model": {
+          "type": "string",
+          "description": "CIM data model name (e.g., 'Authentication', 'Network_Traffic', 'Endpoint')",
+          "required": true
+        },
+        "fields": {
+          "type": "string",
+          "description": "Comma-separated list of available field names to validate",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["data_model", "CIM", "validation"],
+      "requires": []
+    },
+    {
+      "name": "design_index_strategy",
+      "description": "Suggest index, sourcetype, and retention strategy based on estimated data volume and use case.",
+      "parameters": {
+        "use_case": {
+          "type": "string",
+          "description": "Description of the use case (e.g., 'security logs', 'application monitoring')",
+          "required": true
+        },
+        "daily_volume_gb": {
+          "type": "number",
+          "description": "Estimated daily ingest volume in GB",
+          "required": true
+        },
+        "retention_days": {
+          "type": "number",
+          "description": "Desired retention period in days",
+          "required": false
+        }
+      },
+      "approval_level": "confirm",
+      "timeout_seconds": 20,
+      "max_retries": 1,
+      "intents": ["index", "retention", "strategy"],
+      "requires": []
+    }
+  ]
+}

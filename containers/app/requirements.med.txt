@@ -1,0 +1,10 @@
+# =============================================================================
+# MED requirements - LLM_MED additions (on top of base)
+# =============================================================================
+# Adds reranking, caching, and monitoring for balanced deployments
+
+# Cross-encoder reranking for better retrieval accuracy
+sentence-transformers>=2.2.0
+
+# Monitoring & Observability (prometheus-client moved to base)
+# Note: redis moved to requirements.base.txt (needed by ENABLE_CACHE=true in all profiles)

@@ -1,0 +1,14 @@
+# File System Paths
+# Edit this file to configure the corresponding feature.
+
+host_base_path: /mnt/c/tools
+app_root: /app
+chroma_store: /app/chroma_store
+specs_chroma_store: /app/specs_chroma_store
+feedback: /app/public/feedback
+static_specs: /app/static_specs
+static_docs: /app/static_docs
+local_documents_source: /mnt/c/tools/documents/splunk
+logs: /app/logs
+temp: /tmp
+backups: /app/backups

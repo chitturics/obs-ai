@@ -1,0 +1,12 @@
+# Worker: Git Repository Sync
+# Edit this file to configure the corresponding feature.
+
+enabled: false
+schedule: interval
+interval_minutes: 60
+description: Pull latest configs and docs from git repository
+repository: https://github.com/yourorg/yourrepo
+branches:
+- main
+- develop
+auto_ingest_on_change: true

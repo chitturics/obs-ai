@@ -1,0 +1,13 @@
+# Ollama LLM Service with GPU support
+FROM docker.io/ollama/ollama:latest
+
+ENV OLLAMA_HOST=127.0.0.1:11430
+ENV OLLAMA_KEEP_ALIVE=-1
+
+EXPOSE 11430
+
+# Entrypoint script to pull models on startup
+COPY docker_files/entrypoint.ollama.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

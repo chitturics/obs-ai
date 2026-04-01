@@ -1,0 +1,67 @@
+# =============================================================================
+# BASE requirements - LLM_LITE and all profiles
+# =============================================================================
+# Minimal dependencies for a working chat app with Ollama + ChromaDB
+
+# Core Framework
+chainlit>=1.0.0
+langchain>=0.1.0
+langchain-ollama>=0.1.0
+langchain-core>=0.1.0
+
+# Database & ORM
+sqlalchemy>=2.0.20
+asyncpg>=0.29.0
+psycopg2-binary>=2.9.10
+alembic>=1.13.0
+
+# Vector Store & Embeddings
+chromadb>=0.4.0
+langchain-chroma>=0.1.0
+langchain-text-splitters>=0.1.0
+
+# Document Processing (lightweight)
+pypdf>=4.0.0
+beautifulsoup4>=4.12.0
+tiktoken>=0.5.0
+
+# HTTP & Networking
+httpx>=0.25.0
+requests>=2.31.0
+splunk-sdk>=1.7.3
+
+# Caching
+redis[hiredis]>=5.0.0
+
+# Resilience
+tenacity>=8.2.0
+
+# Monitoring (lightweight, needed by health_routes.py)
+prometheus-client>=0.19.0
+
+# Configuration
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Security
+bcrypt>=4.0.0
+# PyJWT with cryptography extras for OIDC id_token JWKS signature verification (ADR-005)
+PyJWT[crypto]>=2.8.0
+cryptography>=41.0.0
+
+# Knowledge Graph
+networkx>=3.1
+
+# LLM Observability
+langfuse>=3.0.0
+
+# Distributed Tracing (OpenTelemetry)
+opentelemetry-api>=1.20.0
+opentelemetry-sdk>=1.20.0
+opentelemetry-semantic-conventions>=0.41b0
+opentelemetry-exporter-otlp-proto-grpc>=1.20.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+ruamel.yaml>=0.18

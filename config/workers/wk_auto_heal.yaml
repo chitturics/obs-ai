@@ -1,0 +1,13 @@
+# Worker: Auto-Heal Service Monitor
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: interval
+interval_minutes: 5
+description: Service health checks with auto-recovery
+services:
+- postgresql
+- chromadb
+- ollama
+- redis
+max_restart_attempts: 3

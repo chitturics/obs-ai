@@ -1,0 +1,23 @@
+# Integration: SharePoint
+# Edit this file to configure the corresponding feature.
+
+enabled: false
+tenant_id: Set via ENV
+client_id: Set via ENV
+client_secret: '****'
+site_url: https://yourcompany.sharepoint.com/sites/YourSite
+ingestion:
+  include_libraries: []
+  exclude_libraries:
+  - Form Templates
+  - Site Assets
+  - Style Library
+  max_docs_per_library: null
+  sync_schedule: 0 2 * * *
+  incremental: true
+collection:
+  name: sharepoint_docs
+  description: SharePoint document library content
+collection_name: sharepoint_docs
+collection_description: SharePoint document library content
+description: SharePoint document library integration

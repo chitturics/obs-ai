@@ -1,0 +1,101 @@
+{
+  "name": "deployment_manager",
+  "version": "1.0.0",
+  "description": "Deployment management skill for planning deployments, validating bundles, generating serverclass.conf, and checking version compatibility.",
+  "author": "ObsAI Team",
+  "category": "automation",
+  "tags": ["deployment", "config", "management"],
+  "icon": "upload-cloud",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "splunk_version": {
+      "type": "string",
+      "description": "Target Splunk version for compatibility checks",
+      "default": "9.2.0"
+    },
+    "deployment_method": {
+      "type": "string",
+      "description": "Preferred deployment method: 'deployment_server', 'git', or 'manual'",
+      "default": "deployment_server"
+    }
+  },
+  "actions": [
+    {
+      "name": "plan_deployment",
+      "description": "Create a phased deployment plan for configuration changes including rollback procedures.",
+      "parameters": {
+        "changes": {
+          "type": "string",
+          "description": "Description of the configuration changes to deploy",
+          "required": true
+        },
+        "environment": {
+          "type": "string",
+          "description": "Target environment: 'dev', 'staging', or 'production'",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["deploy", "plan", "rollout", "change"],
+      "requires": []
+    },
+    {
+      "name": "validate_bundle",
+      "description": "Validate a deployment bundle for common issues such as missing files, syntax errors, and configuration conflicts.",
+      "parameters": {
+        "bundle_contents": {
+          "type": "string",
+          "description": "Description or listing of bundle contents (files and directories)",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["validate", "bundle", "check", "verify"],
+      "requires": []
+    },
+    {
+      "name": "generate_serverclass",
+      "description": "Generate serverclass.conf configuration from deployment requirements for the Splunk deployment server.",
+      "parameters": {
+        "requirements": {
+          "type": "string",
+          "description": "Description of deployment requirements (e.g., 'deploy TA-windows to all Windows servers, deploy TA-linux to Linux hosts')",
+          "required": true
+        }
+      },
+      "approval_level": "confirm",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["serverclass", "deployment_server", "distribute"],
+      "requires": []
+    },
+    {
+      "name": "check_compatibility",
+      "description": "Check version compatibility of Splunk apps and add-ons against a target Splunk version.",
+      "parameters": {
+        "apps": {
+          "type": "string",
+          "description": "Comma-separated list of app names and versions (e.g., 'Splunk_TA_windows:8.0.0, Splunk_SA_CIM:5.1.0')",
+          "required": true
+        },
+        "target_version": {
+          "type": "string",
+          "description": "Target Splunk version to check compatibility against",
+          "required": false
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["compatibility", "version", "upgrade", "check"],
+      "requires": []
+    }
+  ]
+}

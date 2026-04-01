@@ -1,0 +1,11 @@
+# PostgreSQL Database for Chainlit
+FROM docker.io/postgres:16-alpine
+
+ENV POSTGRES_USER=chainlit
+ENV POSTGRES_PASSWORD=chainlit
+ENV POSTGRES_DB=chainlit
+
+# Copy initialization script
+COPY ../postgres/init_chainlit_schema.sql /docker-entrypoint-initdb.d/00-init_chainlit_schema.sql
+
+EXPOSE 5432

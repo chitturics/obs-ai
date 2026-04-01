@@ -1,0 +1,14 @@
+# Worker: Splunkbase Catalog Refresh
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+catalog_path: /app/data/splunkbase_catalog.json
+update_schedule: daily
+splunk_url: ''
+splunk_token: ''
+max_apps_per_fetch: 0
+include_private: false
+auto_compare: true
+schedule: daily
+time: 04:30
+description: Refresh Splunkbase app/TA catalog (1800+ apps)

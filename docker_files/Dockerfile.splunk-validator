@@ -1,0 +1,48 @@
+# =============================================================================
+# Splunk Validator Container
+# =============================================================================
+# Minimal Splunk Enterprise container for:
+#   - btool: Configuration validation
+#   - /services/search/parser: SPL syntax validation
+#   - /services/search/parse: Query parsing (experimental)
+#
+# This container runs Splunk in a minimal mode primarily for validation,
+# not for actual data indexing or searching.
+#
+# License: Uses Splunk Free license (500MB/day) - sufficient for validation
+# =============================================================================
+
+FROM docker.io/splunk/splunk:9.2
+
+# Labels
+LABEL maintainer="chainlit-assistant"
+LABEL description="Splunk validation container for btool and search parsing"
+LABEL version="1.0.0"
+
+# Environment for minimal operation
+ENV SPLUNK_START_ARGS="--accept-license"
+ENV SPLUNK_PASSWORD="ValidatorP@ss123"
+ENV SPLUNK_LICENSE_URI="Free"
+ENV SPLUNK_WEB_PORT="8005"
+
+# Disable unnecessary services to reduce resource usage
+ENV SPLUNK_SEARCH_ENABLED="true"
+ENV SPLUNK_INDEXER_ENABLED="false"
+ENV SPLUNK_DEPLOYMENT_SERVER_ENABLED="false"
+ENV SPLUNK_DEPLOYMENT_CLIENT_ENABLED="false"
+ENV SPLUNK_CLUSTER_MASTER_ENABLED="false"
+ENV SPLUNK_SHC_ENABLED="false"
+
+# Copy custom app for repository configs (will be mounted at runtime)
+# This allows btool to see org-specific configurations
+COPY --chown=splunk:splunk containers/splunk_validator/default.yml /tmp/defaults/
+
+# Expose REST API port (8089)
+EXPOSE 8089
+
+# Health check for REST API
+HEALTHCHECK --interval=30s --timeout=10s --retries=5 --start-period=120s \
+    CMD curl -k -s -u admin:${SPLUNK_PASSWORD} https://localhost:8089/services/server/info | grep -q "server_roles" || exit 1
+
+# The base image handles startup
+# We just need to ensure REST API is available

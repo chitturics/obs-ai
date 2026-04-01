@@ -1,0 +1,254 @@
+{
+  "name": "ObsAI",
+  "version": "3.2.0",
+  "description": "AI-powered agentic assistant for Splunk, Cribl, and Observability",
+  "last_updated": "2026-03-05",
+
+  "containers": {
+    "chat_db_app": {
+      "image": "postgres:16-alpine",
+      "port": 5432,
+      "purpose": "User data, feedback, chat history",
+      "persistent_volume": "postgres_data",
+      "restart_policy": "full_restart"
+    },
+    "chat_chroma_db": {
+      "image": "chromadb/chroma:latest",
+      "port": 8001,
+      "purpose": "Multi-collection vector store for RAG",
+      "persistent_volume": "chroma_data",
+      "restart_policy": "full_restart"
+    },
+    "llm_api_service": {
+      "image": "ollama/ollama:latest",
+      "port": 11430,
+      "purpose": "Local LLM inference and embeddings",
+      "persistent_volume": "./llms",
+      "restart_policy": "app_restart"
+    },
+    "chat_ui_app": {
+      "image": "chainlit-app:latest",
+      "port": 8000,
+      "purpose": "Main application UI (Chainlit or Open WebUI mode)",
+      "persistent_volume": "chainlit_data",
+      "restart_policy": "app_restart"
+    },
+    "search_opt_service": {
+      "image": "search-opt:latest",
+      "port": 9005,
+      "purpose": "Query analysis and SPL optimization API",
+      "restart_policy": "app_restart"
+    },
+    "prometheus_monitoring": {
+      "image": "prom/prometheus:latest",
+      "port": 9090,
+      "purpose": "Metrics collection",
+      "restart_policy": "hot_reload"
+    },
+    "grafana_monitoring": {
+      "image": "grafana/grafana:latest",
+      "port": 3000,
+      "purpose": "Dashboards and visualization",
+      "restart_policy": "hot_reload"
+    },
+    "redis_cache": {
+      "image": "redis:7-alpine",
+      "port": 6379,
+      "purpose": "Semantic cache and session store",
+      "restart_policy": "app_restart"
+    },
+    "docling_converter": {
+      "image": "ds4sd/docling-serve-cpu:latest",
+      "port": 5001,
+      "purpose": "Document conversion with OCR and table extraction",
+      "optional": true,
+      "enabled_by": "DOCLING_ENABLED=true",
+      "restart_policy": "hot_reload"
+    }
+  },
+
+  "collections": {
+    "spl_commands_mxbai": {
+      "source_label": "spl_commands",
+      "source_dirs": ["/app/shared/public/documents/commands"],
+      "file_patterns": ["*.md"],
+      "purpose": "SPL command documentation (174 commands)",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "specs_mxbai_embed_large_v3": {
+      "source_label": "spec_files + conf_reference",
+      "source_dirs": ["/app/shared/public/documents/specs"],
+      "file_patterns": ["*.spec", "*.conf"],
+      "purpose": "Splunk spec and conf reference files",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "assistant_memory_mxbai_v2": {
+      "source_label": "metadata",
+      "source_dirs": ["/app/metadata"],
+      "file_patterns": ["*.md"],
+      "purpose": "RAG context, guardrails, troubleshooting guides",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "org_repo_mxbai": {
+      "source_label": "org_repo",
+      "source_dirs": ["/app/shared/public/documents/repo"],
+      "file_patterns": ["**/*.*"],
+      "purpose": "Organization-specific Splunk configs (production)",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "local_docs_mxbai": {
+      "source_label": "local_docs",
+      "source_dirs": ["/app/shared/public/documents/pdfs"],
+      "file_patterns": ["**/*.*"],
+      "purpose": "Local PDFs, vendor guides, integration docs",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "cribl_docs_mxbai": {
+      "source_label": "cribl_docs",
+      "source_dirs": ["/app/shared/public/documents/cribl"],
+      "file_patterns": ["**/*.*"],
+      "purpose": "Cribl documentation",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "feedback_qa_mxbai_embed_large": {
+      "source_label": "feedback",
+      "source_dirs": [],
+      "file_patterns": [],
+      "purpose": "LLM-polished Q&A pairs from user feedback (25x boost)",
+      "embedding_model": "mxbai-embed-large"
+    },
+    "self_learned_qa": {
+      "source_label": "self_learning",
+      "source_dirs": [],
+      "file_patterns": [],
+      "purpose": "Auto-generated Q&A from self-learning pipeline",
+      "embedding_model": "mxbai-embed-large"
+    }
+  },
+
+  "modules": {
+    "core_pipeline": {
+      "message_handler": {"path": "chat_app/message_handler.py", "purpose": "Core message processing pipeline"},
+      "intent_classifier": {"path": "chat_app/intent_classifier.py", "purpose": "Intent detection with SPL action patterns"},
+      "query_router_handler": {"path": "chat_app/query_router_handler.py", "purpose": "QueryPlan builder"},
+      "response_generator": {"path": "chat_app/response_generator.py", "purpose": "LLM response with streaming"},
+      "context_builder": {"path": "chat_app/context_builder.py", "purpose": "Chunk scoring and context assembly"},
+      "vectorstore_search": {"path": "chat_app/vectorstore_search.py", "purpose": "Parallel multi-collection search"}
+    },
+    "agentic": {
+      "skill_catalog": {"path": "chat_app/skill_catalog.py", "purpose": "72 skills mapped to human actions"},
+      "agent_catalog": {"path": "chat_app/agent_catalog.py", "purpose": "43 agents mapped to human roles"},
+      "skill_executor": {"path": "chat_app/skill_executor.py", "purpose": "4-tier skill resolution (57/69 handlers)"},
+      "agent_dispatcher": {"path": "chat_app/agent_dispatcher.py", "purpose": "Agent scoring and dispatch"},
+      "workflow_orchestrator": {"path": "chat_app/workflow_orchestrator.py", "purpose": "Multi-agent coordination"},
+      "orchestration_strategies": {"path": "chat_app/orchestration_strategies.py", "purpose": "17 orchestration strategies"}
+    },
+    "intelligence": {
+      "self_evaluator": {"path": "chat_app/self_evaluator.py", "purpose": "Post-generation quality scoring"},
+      "confidence_scorer": {"path": "chat_app/confidence_scorer.py", "purpose": "5-factor confidence calibration"},
+      "knowledge_gap_detector": {"path": "chat_app/knowledge_gap_detector.py", "purpose": "Missing content detection"},
+      "episodic_memory": {"path": "chat_app/episodic_memory.py", "purpose": "Interaction history and fact learning"},
+      "user_model": {"path": "chat_app/user_model.py", "purpose": "Per-user expertise inference"},
+      "failure_analyzer": {"path": "chat_app/failure_analyzer.py", "purpose": "Typed failure categorization"}
+    },
+    "learning": {
+      "self_learning": {"path": "chat_app/self_learning.py", "purpose": "Q&A generation, reassessment, fact learning"},
+      "resource_manager": {"path": "chat_app/resource_manager.py", "purpose": "Resource-aware scheduling, auto-heal"},
+      "eval_training_export": {"path": "chat_app/eval_training_export.py", "purpose": "Training data generation (19K+ entries)"},
+      "eval_rag_optimizer": {"path": "chat_app/eval_rag_optimizer.py", "purpose": "RAG grid search optimization"}
+    },
+    "spl_processing": {
+      "nlp_to_spl": {"path": "shared/nlp_to_spl.py", "purpose": "Natural language to SPL"},
+      "spl_robust_analyzer": {"path": "shared/spl_robust_analyzer.py", "purpose": "Anti-pattern detection and auto-fix"},
+      "spl_query_optimizer": {"path": "shared/spl_query_optimizer.py", "purpose": "Query optimization logic"},
+      "spl_validator": {"path": "shared/spl_validator.py", "purpose": "SPL syntax validation"},
+      "spl_template_engine": {"path": "shared/spl_template_engine.py", "purpose": "Template-based SPL generation"},
+      "spl_knowledge_base": {"path": "shared/spl_knowledge_base.py", "purpose": "SPL command reference data"}
+    },
+    "infrastructure": {
+      "settings": {"path": "chat_app/settings.py", "purpose": "Pydantic settings (20 sub-models)"},
+      "admin_api": {"path": "chat_app/admin_api.py", "purpose": "109 admin REST endpoints"},
+      "health_monitor": {"path": "chat_app/health_monitor.py", "purpose": "Service health checks and metrics"},
+      "document_ingestor": {"path": "chat_app/document_ingestor.py", "purpose": "PDF/HTML/JSON/CSV/Docling ingestion"},
+      "docling_client": {"path": "chat_app/docling_client.py", "purpose": "Docling sidecar HTTP client"},
+      "knowledge_graph": {"path": "chat_app/knowledge_graph.py", "purpose": "NetworkX entity relationship graph"},
+      "config_manager": {"path": "chat_app/config_manager.py", "purpose": "Full CRUD for config.yaml"}
+    }
+  },
+
+  "profiles": {
+    "LLM_LITE": {
+      "model": "qwen2.5:3b",
+      "embed_model": "mxbai-embed-large",
+      "context_length": 4096,
+      "gpu_required": false,
+      "min_ram_gb": 8
+    },
+    "LLM_MED": {
+      "model": "qwen2.5-coder:7b",
+      "embed_model": "mxbai-embed-large",
+      "context_length": 8192,
+      "gpu_required": false,
+      "min_ram_gb": 12
+    },
+    "LLM_MAX": {
+      "model": "codellama:13b-instruct",
+      "embed_model": "mxbai-embed-large",
+      "context_length": 16384,
+      "gpu_required": true,
+      "min_ram_gb": 16
+    }
+  },
+
+  "orchestration_strategies": [
+    "single_agent", "parallel", "hierarchical", "iterative",
+    "coordinator", "voting", "react", "review_critique",
+    "workflow", "swarm", "human_in_loop", "adaptive",
+    "democratic", "capitalist", "authoritarian", "parliament", "meritocratic"
+  ],
+
+  "test_suite": {
+    "total_tests": 2105,
+    "test_runner": "bash scripts/run_tests.sh quick",
+    "pre_existing_failures": 4,
+    "test_files": 36
+  },
+
+  "skills": {
+    "total": 72,
+    "executed": 57,
+    "families": ["cognitive", "io", "communication", "alerting", "creative", "social", "maintenance", "operational"],
+    "packages": 12
+  },
+
+  "agents": {
+    "total": 43,
+    "departments": ["engineering", "operations", "data", "infrastructure", "management", "knowledge", "security", "ui_ux", "support", "creative"]
+  },
+
+  "ingestion": {
+    "script": "chat_app/run_quick_ingest.py",
+    "embedding_model": "mxbai-embed-large",
+    "max_chunk_chars": 1500,
+    "safe_chunk_chars": 1200,
+    "chunk_overlap_chars": 150,
+    "supported_formats": [".pdf", ".md", ".txt", ".conf", ".spec", ".json", ".yaml", ".yml", ".xml", ".toml", ".log", ".ini", ".cfg", ".html", ".csv"],
+    "docling_formats": [".docx", ".pptx", ".xlsx", ".odt"]
+  },
+
+  "config_sections": {
+    "hot_reload": ["ingestion", "retrieval", "prompts", "security", "features", "organization", "sharepoint", "github", "docling", "splunkbase_catalog", "knowledge_graph"],
+    "app_restart": ["active_profile", "profiles", "directories", "ui", "mcp_gateway", "orchestration"],
+    "full_restart": ["database"]
+  },
+
+  "endpoints": {
+    "ui": "http://localhost:8000",
+    "admin_console": "http://localhost:8000/api/admin/page",
+    "admin_api": "http://localhost:8000/api/admin/",
+    "health": "http://localhost:8000/api/admin/health",
+    "docs": "http://localhost:8000/api/admin/docs",
+    "prometheus": "http://localhost:9090",
+    "grafana": "http://localhost:3000"
+  }
+}

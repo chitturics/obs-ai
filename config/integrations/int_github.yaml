@@ -1,0 +1,29 @@
+# Integration: GitHub
+# Edit this file to configure the corresponding feature.
+
+enabled: false
+repo_url: https://github.com/yourorg/yourrepo
+token: Set via ENV
+branches:
+- main
+- develop
+include_patterns:
+- '*.md'
+- '*.py'
+- '*.yml'
+- '*.yaml'
+- '*.json'
+- docs/**/*
+- config/**/*
+exclude_patterns:
+- node_modules/**
+- venv/**
+- '*.pyc'
+- __pycache__/**
+ingestion:
+  sync_schedule: 0 */4 * * *
+  incremental: true
+collection:
+  name: github_repo
+  description: GitHub repository content
+description: GitHub repository for config and document sync

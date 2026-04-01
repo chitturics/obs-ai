@@ -1,0 +1,34 @@
+# Ingestion Container for Specs and Local Files
+FROM docker.io/python:3.11-slim
+
+WORKDIR /app
+
+# Build arg: set to true to include playwright for web scraping
+ARG WITH_PLAYWRIGHT=false
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies (minimal - only what ingest actually uses)
+COPY containers/ingest/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt && \
+    if [ "$WITH_PLAYWRIGHT" = "true" ]; then \
+      pip install --no-cache-dir playwright>=1.40.0 cloudscraper>=1.2.71 && \
+      python -m playwright install --with-deps chromium; \
+    fi
+
+# Application code
+COPY chat_app /app/chat_app
+COPY shared /app/shared
+COPY ingest_specs /app/ingest_specs
+COPY containers/ingest/ingest_local_docs.py /app/ingest_local_docs.py
+
+ENTRYPOINT ["/bin/bash"]

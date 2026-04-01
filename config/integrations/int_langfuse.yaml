@@ -1,0 +1,8 @@
+# Integration: Langfuse
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+host: http://localhost:3200
+public_key: pk-obsai-dev
+secret_key: sk-obsai-dev
+description: Langfuse LLM observability and tracing

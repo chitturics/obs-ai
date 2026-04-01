@@ -1,0 +1,6 @@
+# Integration: Splunk Enterprise
+# Edit this file to configure the corresponding feature.
+
+splunk_verify_ssl: true
+splunk_ca_bundle: ''
+description: Splunk Enterprise connection for live data access

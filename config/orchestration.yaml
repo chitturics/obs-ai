@@ -1,0 +1,26 @@
+# Multi-Agent Orchestration Strategies
+# Edit this file to configure the corresponding feature.
+
+default_strategy: adaptive
+max_iterations: 3
+max_parallel_agents: 3
+quality_threshold: 0.7
+max_duration_seconds: 30.0
+resource_fallback: true
+critic_enabled: true
+human_approval_intents: []
+strategy_overrides:
+  spl_generation: single_agent
+  spl_optimization: single_agent
+  spl_explanation: single_agent
+  spl_validation: single_agent
+  general_qa: single_agent
+  greeting: single_agent
+  command_help: single_agent
+  data_transform: single_agent
+director_graph:
+  max_hops: 10
+  default_template: director_loop
+action_engine:
+  max_actions: 15
+  timeout_per_action: 10

@@ -1,0 +1,51 @@
+{
+  "description": "Splunk AI assistant metadata: indexes, sourcetypes, fields, and lookups for organization environment.",
+  "indexes": {
+    "snow": "ServiceNow incidents, changes, and CMDB data.",
+    "idc_asa": "Cisco ASA firewall logs.",
+    "pan_logs": "Palo Alto firewall and threat logs.",
+    "network": "Network device and circuit telemetry, including unit_id and circuit fields.",
+    "wineventlog": "Windows Security and System EventLog data.",
+    "linux_auth": "Linux authentication and system auth logs.",
+    "web": "Web server access logs.",
+    "api": "API gateway or backend HTTP access logs.",
+    "os": "Operating system metrics and host-level telemetry."
+  },
+  "fields": {
+    "unit_id": "Identifier for a business unit, site, or logical network grouping.",
+    "circuit": "Identifier for a physical or logical network circuit/link.",
+    "network": "CIDR or network key used to join with the infoblox_networks_lite lookup.",
+    "u_business_unit": "ServiceNow field mapping incidents to a business unit.",
+    "u_business_service": "ServiceNow field representing the impacted business service.",
+    "Authentication.user": "CIM Authentication username field.",
+    "Authentication.src": "CIM Authentication source IP/host field."
+  },
+  "lookups": {
+    "unit_id_list": {
+      "description": "Lookup mapping unit_id and circuit to human-readable names and attributes.",
+      "key_fields": [
+        "unit_id",
+        "circuit"
+      ]
+    },
+    "infoblox_networks_lite": {
+      "description": "Lookup mapping network CIDRs to organization, unit_id, circuit, and region metadata.",
+      "key_fields": [
+        "network"
+      ],
+      "output_fields": [
+        "organization",
+        "unit_id",
+        "circuit",
+        "region"
+      ]
+    }
+  },
+  "rules": {
+    "no_index_star": "Never use index=* or recommend index=* in SPL. Always ask which index or indexes are relevant.",
+    "prefer_tstats": "Prefer | tstats over raw searches whenever using indexed fields or accelerated data models.",
+    "use_term_prefix": "Use TERM() and PREFIX() to leverage index-time tokenization for faster searches.",
+    "prefer_cim": "Prefer CIM-compliant fields and datamodel searches (datamodel=Authentication, datamodel=Web, etc.) when available.",
+    "ask_for_index": "If the user doesn\u2019t specify an index and it isn\u2019t obvious from context, ask which index or dataset they mean."
+  }
+}

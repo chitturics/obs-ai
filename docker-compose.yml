@@ -1,0 +1,246 @@
+version: "3.8"
+
+services:
+  chat_db_app:
+    image: chainlit-postgres:latest
+    container_name: chat_db_app
+    networks:
+      - chainlit_net
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      # SECURITY: No default passwords. Set POSTGRES_USER/PASSWORD in .env or environment.
+      - POSTGRES_USER=${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (use a strong password)}
+      - POSTGRES_DB=${POSTGRES_DB:-chainlit}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init_chainlit_schema.sql:/docker-entrypoint-initdb.d/00-init_chainlit_schema.sql:ro
+    restart: unless-stopped
+
+  chat_chroma_db:
+    image: chainlit-chromadb:latest
+    container_name: chat_chroma_db
+    networks:
+      - chainlit_net
+    ports:
+      - "${CHROMA_PORT:-8001}:8001"
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/data
+      - ANONYMIZED_TELEMETRY=FALSE
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8001
+      - ALLOW_RESET=TRUE
+    volumes:
+      - chroma_data:/data
+    restart: unless-stopped
+
+  search_opt_service:
+    image: chainlit-search-opt:latest
+    container_name: search_opt_service
+    networks:
+      - chainlit_net
+    ports:
+      - "${SEARCH_OPT_PORT:-9005}:9005"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - SEARCH_OPT_DATA_DIR=/app/data
+    volumes:
+      - ./documents:/app/public/documents:ro
+    restart: unless-stopped
+
+  llm_api_service:
+    image: chainlit-ollama:latest
+    container_name: llm_api_service
+    networks:
+      - chainlit_net
+    ports:
+      - "${OLLAMA_PORT:-11430}:11430"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11430
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_MAX_LOADED_MODELS=2
+    volumes:
+      - ./llms:/root/.ollama
+    restart: unless-stopped
+
+  chat_ui_app:
+    image: chainlit-app:latest
+    container_name: chat_ui_app
+    networks:
+      - chainlit_net
+    ports:
+      - "${CHAINLIT_PORT:-8000}:8000"
+    environment:
+      - UI_FRAMEWORK=${UI_FRAMEWORK:-chainlit}
+      - CHAINLIT_HOST=0.0.0.0
+      - CHAINLIT_PORT=8000
+      # SECURITY: No default secrets. Set in .env file.
+      - CHAINLIT_AUTH_SECRET=${CHAINLIT_AUTH_SECRET:?Set CHAINLIT_AUTH_SECRET in .env (use: openssl rand -hex 32)}
+      - CHAINLIT_DATA_LAYER=postgresql
+      - PG_HOST=chat_db_app
+      - PG_PORT=5432
+      - OLLAMA_HOST=llm_api_service
+      - OLLAMA_PORT=11430
+      - CHROMA_HOST=chat_chroma_db
+      - CHROMA_PORT=8001
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:?Set POSTGRES_USER}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@chat_db_app:5432/${POSTGRES_DB:-chainlit}
+      - ENABLE_AUTHENTICATION=${ENABLE_AUTHENTICATION:-true}
+      - ADMIN_USER=${ADMIN_USER:?Set ADMIN_USER in .env}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env (use a strong password)}
+      - AUTH_USERS=${AUTH_USERS:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - GITHUB_REPO_OWNER=${GITHUB_REPO_OWNER:-obsai-project}
+      - GITHUB_REPO_NAME=${GITHUB_REPO_NAME:-chainlit}
+      - ENABLE_CACHE=true
+      - OLLAMA_BASE_URL=http://llm_api_service:11430
+      - OLLAMA_MODEL=${APP_OLLAMA_MODEL:-qwen2.5:3b}
+      - OLLAMA_EMBED_MODEL=${APP_OLLAMA_EMBED:-mxbai-embed-large}
+      - CHROMA_HTTP_URL=http://chat_chroma_db:8001
+      - CHROMA_COLLECTION=assistant_memory_mxbai_v2
+      - CHROMA_SECONDARY_COLLECTION=specs_mxbai_embed_large_v3
+      - CHROMA_ADDITIONAL_COLLECTIONS=spl_commands_mxbai,org_repo_mxbai,local_docs_mxbai,cribl_docs_mxbai
+      - SEARCH_OPT_URL=http://search_opt_service:9005
+      - DOCS_BASE_URL=/public
+      - LOCAL_DOCS_ROOT=/app/shared/public/documents/pdfs
+      - REPO_DOCS_ROOT=/app/shared/public/documents/repo
+      - ORG_REPO_ROOT=/app/shared/public/documents/repo
+      - SPEC_INGEST_ROOT=/app/shared/public/documents/specs
+      - SPEC_STATIC_ROOT=/app/shared/public/documents/specs
+      - SPL_DOCS_ROOT=/app/shared/public/documents/commands
+      - CRIBL_DOCS_ROOT=/app/shared/public/documents/cribl
+      - DOCUMENTS_ROOT=/app/shared/public/documents
+      - FEEDBACK_ROOT=/app/shared/public/documents/feedback
+      - CHAINLIT_BLOB_STORAGE_PROVIDER=local
+      - CHAINLIT_BLOB_STORAGE_PATH=/app/.chainlit/blobs
+      - SPLUNK_VALIDATOR_HOST=${SPLUNK_VALIDATOR_HOST:-splunk_validator}
+      - SPLUNK_VALIDATOR_PORT=${SPLUNK_VALIDATOR_PORT:-8089}
+      - SPLUNK_VALIDATOR_USER=${SPLUNK_VALIDATOR_USER:?Set SPLUNK_VALIDATOR_USER in .env}
+      - SPLUNK_VALIDATOR_PASS=${SPLUNK_VALIDATOR_PASS:?Set SPLUNK_VALIDATOR_PASS in .env}
+      # Container management: mount socket read-only. Set DISABLE_DOCKER_SOCKET=true to disable.
+      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
+    volumes:
+      - ./documents:/app/shared/public/documents:ro
+      - chainlit_data:/app/.chainlit
+      - app_data:/app/data                    # Persistent: config, audit logs, traces, workflow runs
+      - ${DOCKER_SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock:ro
+      - .:/app/project:ro
+      - ./certs:/app/certs
+    restart: unless-stopped
+
+  prometheus_monitoring:
+    image: docker.io/prom/prometheus:latest
+    container_name: prometheus_monitoring
+    networks:
+      - chainlit_net
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.external-url=/prometheus/'
+      - '--web.route-prefix=/prometheus/'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+  grafana_monitoring:
+    image: docker.io/grafana/grafana:latest
+    container_name: grafana_monitoring
+    networks:
+      - chainlit_net
+    ports:
+      - "3000:3000"
+    environment:
+      # SECURITY: No default password. Set GF_SECURITY_ADMIN_PASSWORD in .env.
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:?Set GF_SECURITY_ADMIN_PASSWORD in .env}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_DATASOURCES_DEFAULT_NAME=Prometheus
+      - GF_DATASOURCES_DEFAULT_TYPE=prometheus
+      - GF_DATASOURCES_DEFAULT_URL=http://prometheus_monitoring:9090
+      - GF_DATASOURCES_DEFAULT_ACCESS=proxy
+      - GF_DATASOURCES_DEFAULT_IS_DEFAULT=true
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana_dashboard_provider.yml:/etc/grafana/provisioning/datasources/default.yml
+      - ./monitoring/search_optimizer_dashboard.json:/etc/grafana/provisioning/dashboards/search_optimizer.json
+    restart: unless-stopped
+
+  # Nginx Gateway — Single entry point on port 80 (mapped to host ${GATEWAY_PORT:-8080})
+  # Routes: / → Chainlit, /grafana → Grafana, /prometheus → Prometheus, /hoppscotch → Hoppscotch
+  nginx_gateway:
+    image: chainlit-nginx:latest
+    container_name: nginx_gateway
+    networks:
+      - chainlit_net
+    ports:
+      - "${GATEWAY_PORT:-8080}:80"
+      - "${GATEWAY_SSL_PORT:-8443}:443"
+    volumes:
+      - ./certs:/etc/nginx/ssl:ro
+    depends_on:
+      - chat_ui_app
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    networks:
+      - chainlit_net
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # Open WebUI frontend — only used when UI_FRAMEWORK=open-webui
+  # Start with: UI_FRAMEWORK=open-webui docker compose up
+  # Or use profiles: docker compose --profile open-webui up
+  open_webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open_webui
+    profiles:
+      - open-webui
+    networks:
+      - chainlit_net
+    ports:
+      - "${OPEN_WEBUI_PORT:-3000}:8080"
+    environment:
+      - OPENAI_API_BASE_URL=http://chat_ui_app:8000/v1
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-obsai-local}
+      - WEBUI_AUTH=${OPEN_WEBUI_AUTH:-false}
+      - ENABLE_OLLAMA_API=false
+      - DEFAULT_MODELS=obsai-splunk-assistant
+    volumes:
+      - open_webui_data:/app/backend/data
+    restart: unless-stopped
+
+  # Hoppscotch — Stateless API Testing Tool (frontend only, no backend/DB)
+  # All data stays in user's browser localStorage. Server is just a CDN.
+  # Start with: docker compose --profile api-testing up
+  # Or use flag: bash docker_files/start_all.sh --with-hoppscotch
+  hoppscotch:
+    image: docker.io/hoppscotch/hoppscotch-frontend:latest
+    container_name: hoppscotch_api
+    profiles:
+      - api-testing
+    networks:
+      - chainlit_net
+    ports:
+      - "${HOPPSCOTCH_PORT:-3170}:3000"
+    restart: unless-stopped
+
+networks:
+  chainlit_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  chroma_data:
+  chainlit_data:
+  app_data:           # Persistent app state: config, audit logs, execution traces, workflow runs
+  prometheus_data:
+  grafana_data:
+  redis_data:
+  open_webui_data:

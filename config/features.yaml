@@ -1,0 +1,18 @@
+# Feature Flags
+# Edit this file to configure the corresponding feature.
+
+hybrid_search: true
+query_caching: true
+response_streaming: true
+auto_feedback_collection: true
+reranking: true
+query_expansion: true
+hyde: true
+compound_query_detection: true
+prometheus_metrics: true
+health_checks: true
+circuit_breakers: true
+retry_with_backoff: true
+fallback_responses: true
+docling_processing: false
+splunkbase_catalog: true

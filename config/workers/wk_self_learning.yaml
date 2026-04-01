@@ -1,0 +1,13 @@
+# Worker: Self-Learning Pipeline
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: daily
+time: 02:00
+description: 'Self-learning cycle: Q&A generation, fact extraction, prompt overlay'
+resource_gated: true
+parameters:
+  qa_generation: true
+  fact_extraction: true
+  prompt_overlay: true
+  model_customization: false

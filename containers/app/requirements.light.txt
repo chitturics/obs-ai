@@ -1,0 +1,7 @@
+# =============================================================================
+# LIGHT requirements - LLM_LITE + LLM_MED (no heavy GPU/scraping packages)
+# =============================================================================
+# Used by Dockerfile.app for faster builds. Skips playwright, presidio, otel.
+
+-r requirements.base.txt
+-r requirements.med.txt

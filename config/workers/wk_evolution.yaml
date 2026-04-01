@@ -1,0 +1,11 @@
+# Worker: Evolution & Self-Improvement
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: interval
+interval_minutes: 5
+description: 'Evolution engine: staleness detection, root cause analysis, improvement
+  actions'
+assessment_on_idle: true
+idle_threshold_seconds: 60
+max_tasks_per_cycle: 12

@@ -1,0 +1,56 @@
+FROM docker.io/python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy application code
+COPY chat_app/ /app/chat_app/
+COPY shared/ /app/shared/
+COPY requirements.txt /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# =============================================================================
+# COPY ALL DOCUMENTS INTO IMAGE (from /opt/nls/chatapp/documents on host)
+# =============================================================================
+
+# This assumes you have documents at /opt/nls/chatapp/documents on the build machine
+# If building from different location, adjust the COPY source paths
+
+# Copy Splunk .spec files
+COPY documents/specs/ /app/chat_app/public/documents/specs/
+
+# Copy SPL command documentation
+COPY documents/commands/ /app/chat_app/public/documents/commands/
+
+# Copy organization repo (your Splunk configs)
+COPY documents/repo/ /app/chat_app/public/documents/repo/
+
+# Copy PDFs and other documentation
+COPY documents/pdfs/ /app/chat_app/public/documents/pdfs/
+
+# Create feedback directory
+RUN mkdir -p /app/chat_app/feedback
+
+# Verify documents were copied
+RUN echo "✅ Verifying documents..." && \
+    find /app/chat_app/public/documents -type f | head -20 && \
+    echo "Total files copied: $(find /app/chat_app/public/documents -type f | wc -l)"
+
+# Set working directory
+WORKDIR /app/chat_app
+
+# Expose Chainlit port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8000 || exit 1
+
+# Run Chainlit
+CMD ["chainlit", "run", "app.py", "--host", "0.0.0.0", "--port", "8000"]

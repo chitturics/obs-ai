@@ -1,0 +1,96 @@
+{
+  "name": "cribl_expert",
+  "version": "1.0.0",
+  "description": "Cribl pipeline expertise skill for designing pipelines, optimizing performance, generating routes, and estimating data volume reduction.",
+  "author": "ObsAI Team",
+  "category": "cribl",
+  "tags": ["cribl", "pipeline", "routing", "stream"],
+  "icon": "git-branch",
+  "license": "MIT",
+  "min_version": "3.0.0",
+  "homepage": "",
+  "dependencies": [],
+  "config_schema": {
+    "cribl_version": {
+      "type": "string",
+      "description": "Cribl Stream version for compatibility checks",
+      "default": "4.0"
+    },
+    "default_worker_count": {
+      "type": "number",
+      "description": "Default number of Cribl worker processes",
+      "default": 4
+    }
+  },
+  "actions": [
+    {
+      "name": "design_pipeline",
+      "description": "Design a Cribl Stream pipeline from a requirements description including function selection and ordering.",
+      "parameters": {
+        "requirements": {
+          "type": "string",
+          "description": "Description of pipeline requirements (e.g., 'filter out debug logs, mask SSN fields, route to S3')",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 2,
+      "intents": ["pipeline", "design", "cribl", "stream"],
+      "requires": []
+    },
+    {
+      "name": "optimize_pipeline",
+      "description": "Optimize an existing Cribl pipeline for performance and cost by analyzing function order and suggesting improvements.",
+      "parameters": {
+        "pipeline": {
+          "type": "string",
+          "description": "JSON string or description of the existing pipeline functions",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 15,
+      "max_retries": 1,
+      "intents": ["optimize", "performance", "cribl"],
+      "requires": []
+    },
+    {
+      "name": "generate_route",
+      "description": "Generate Cribl route configuration with filters based on routing requirements.",
+      "parameters": {
+        "description": {
+          "type": "string",
+          "description": "Description of routing requirements (e.g., 'route syslog to Splunk, metrics to S3')",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["route", "routing", "filter", "cribl"],
+      "requires": []
+    },
+    {
+      "name": "estimate_reduction",
+      "description": "Estimate data volume reduction from pipeline transformations based on the types of functions applied.",
+      "parameters": {
+        "daily_volume_gb": {
+          "type": "number",
+          "description": "Current daily data volume in GB",
+          "required": true
+        },
+        "transforms": {
+          "type": "string",
+          "description": "Comma-separated list of transforms to apply (e.g., 'filter_debug,mask_pii,remove_fields,suppress_duplicates')",
+          "required": true
+        }
+      },
+      "approval_level": "none",
+      "timeout_seconds": 10,
+      "max_retries": 1,
+      "intents": ["reduction", "volume", "cost", "estimate"],
+      "requires": []
+    }
+  ]
+}

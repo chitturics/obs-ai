@@ -1,0 +1,46 @@
+# Fine-tuning container for LoRA training with unsloth
+# Requires: NVIDIA GPU with CUDA support
+#
+# Build:
+#   podman build -f docker_files/Dockerfile.finetune -t chainlit-finetune .
+#
+# Run:
+#   podman run --rm --gpus all \
+#     -v ./training_data:/app/training_data \
+#     chainlit-finetune
+
+FROM docker.io/nvidia/cuda:12.1.0-devel-ubuntu22.04
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# System deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-dev git curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# PyTorch with CUDA 12.1
+RUN pip3 install --no-cache-dir \
+    torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121
+
+# Training stack
+RUN pip3 install --no-cache-dir \
+    "unsloth @ git+https://github.com/unslothai/unsloth.git" \
+    xformers \
+    transformers \
+    datasets \
+    trl \
+    peft \
+    bitsandbytes \
+    accelerate \
+    sentencepiece \
+    protobuf \
+    requests
+
+COPY scripts/finetune_model.py /app/scripts/finetune_model.py
+
+ENTRYPOINT ["python3", "scripts/finetune_model.py"]
+CMD ["--help"]

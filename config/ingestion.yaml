@@ -1,0 +1,34 @@
+# Document Ingestion Pipeline
+# Edit this file to configure the corresponding feature.
+
+chunking:
+  spec_files:
+    chunk_size: 800
+    chunk_overlap: 200
+  documents:
+    chunk_size: 900
+    chunk_overlap: 400
+allowed_extensions:
+- .spec
+- .conf
+- .txt
+- .md
+- .json
+- .yaml
+- .yml
+- .xml
+- .toml
+- .log
+- .ini
+- .cfg
+- .pdf
+performance:
+  max_workers: 4
+  batch_size: 1000
+  max_file_size_mb: 50
+  skip_dedup: false
+  force_reindex: false
+specs:
+  repo_url: https://github.com/jewnix/splunk-spec-files.git
+  branch: splunk-9.4.3-237ebbd22314
+  clone_depth: 1

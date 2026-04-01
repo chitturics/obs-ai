@@ -1,0 +1,9 @@
+# Worker: Document Re-Ingestion
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: daily
+time: 03:00
+description: Re-ingest modified documents from source directories
+resource_gated: true
+watch_directories: /mnt/c/tools

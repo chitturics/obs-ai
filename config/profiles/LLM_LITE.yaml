@@ -1,0 +1,22 @@
+# LLM Profile: LLM_LITE
+# Edit this file to configure the corresponding feature.
+
+description: Fast CPU-only deployment with small models
+hardware:
+  gpu_enabled: false
+  min_ram_gb: 8
+  recommended_ram_gb: 16
+llm:
+  model: qwen2.5:3b
+  spl_model: qwen2.5:3b
+  embed_model: mxbai-embed-large
+  context_length: 2048
+  temperature: 0.01
+  spl_temperature: 0.05
+  top_p: 0.9
+  keep_alive: -1
+performance:
+  expected_query_time_seconds: 30
+  max_concurrent_queries: 2
+  chunk_batch_size: 10
+  embedding_workers: 1

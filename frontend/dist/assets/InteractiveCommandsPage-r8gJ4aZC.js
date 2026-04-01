@@ -1,0 +1,1 @@
+import{j as e}from"./query-AOj6oMsZ.js";import"./vendor-CjvhC_Ck.js";function t(){return e.jsx("iframe",{src:"/api/admin/commands",className:"w-screen h-screen border-0",title:"ObsAI Interactive Tools",allow:"clipboard-write"})}export{t as default};

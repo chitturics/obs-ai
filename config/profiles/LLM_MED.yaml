@@ -1,0 +1,22 @@
+# LLM Profile: LLM_MED
+# Edit this file to configure the corresponding feature.
+
+description: Balanced deployment with Qwen2.5-Coder 7B for SPL/code generation
+hardware:
+  gpu_enabled: false
+  min_ram_gb: 12
+  recommended_ram_gb: 16
+llm:
+  model: qwen2.5-coder:7b
+  spl_model: qwen2.5-coder:7b
+  embed_model: mxbai-embed-large
+  context_length: 8192
+  temperature: 0.1
+  spl_temperature: 0.05
+  top_p: 0.9
+  keep_alive: -1
+performance:
+  expected_query_time_seconds: 120
+  max_concurrent_queries: 1
+  chunk_batch_size: 10
+  embedding_workers: 1

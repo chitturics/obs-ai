@@ -1,0 +1,13 @@
+# Worker: Automated Backup
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: daily
+time: 01:00
+description: Automated config and state backup
+retention_days: 30
+backup_types:
+- config
+- collections
+- feature_requests
+- evolution_state

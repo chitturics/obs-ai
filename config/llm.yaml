@@ -1,0 +1,151 @@
+# =============================================================================
+# LLM Configuration — Obs AI
+# =============================================================================
+# Select your provider, model, and profile. Obs AI supports local (Ollama)
+# and cloud LLMs (OpenAI, Anthropic, Google, Azure, MCP-as-LLM, or any
+# OpenAI-compatible endpoint like vLLM/LMStudio/LocalAI).
+#
+# Provider selection priority:
+#   1. LLM_PROVIDER env var  (e.g. LLM_PROVIDER=anthropic)
+#   2. This file → provider field
+#   3. Default: ollama
+# =============================================================================
+
+# Active provider — one of: ollama, openai, anthropic, google,
+#                            azure_openai, openai_compatible, mcp_llm
+provider: ollama
+
+# Active hardware/model profile (applies to Ollama)
+default_profile: LLM_LITE
+
+# ---------------------------------------------------------------------------
+# Ollama profiles (local LLM)
+# ---------------------------------------------------------------------------
+profiles:
+  LLM_LITE:
+    description: Fast CPU-only deployment with small models
+    hardware:
+      gpu_enabled: false
+      min_ram_gb: 8
+      recommended_ram_gb: 16
+    llm:
+      model: qwen2.5:3b
+      spl_model: qwen2.5:3b
+      embed_model: mxbai-embed-large
+      context_length: 2048
+      temperature: 0.01
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 30
+      max_concurrent_queries: 2
+      chunk_batch_size: 10
+      embedding_workers: 1
+
+  LLM_MED:
+    description: Balanced deployment with Qwen2.5-Coder 7B for SPL/code generation
+    hardware:
+      gpu_enabled: false
+      min_ram_gb: 12
+      recommended_ram_gb: 16
+    llm:
+      model: qwen2.5-coder:7b
+      spl_model: qwen2.5-coder:7b
+      embed_model: mxbai-embed-large
+      context_length: 8192
+      temperature: 0.1
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 120
+      max_concurrent_queries: 1
+      chunk_batch_size: 10
+      embedding_workers: 1
+
+  LLM_MAX:
+    description: High-performance GPU deployment with best models
+    hardware:
+      gpu_enabled: true
+      gpu_memory_gb: 8
+      min_ram_gb: 16
+      recommended_ram_gb: 32
+    llm:
+      model: codellama:13b-instruct
+      spl_model: codellama:13b-instruct
+      embed_model: mxbai-embed-large
+      context_length: 16384
+      temperature: 0.1
+      spl_temperature: 0.05
+      top_p: 0.9
+      keep_alive: -1
+    performance:
+      expected_query_time_seconds: 15
+      max_concurrent_queries: 4
+      chunk_batch_size: 50
+      embedding_workers: 4
+
+# ---------------------------------------------------------------------------
+# Cloud & Remote LLM Providers
+# ---------------------------------------------------------------------------
+# Set API keys via environment variables (recommended) or inline below.
+# Environment variables take precedence over config values.
+#
+# Provider        | Env Variable              | Default Model
+# --------------- | ------------------------- | -------------------------
+# openai          | OPENAI_API_KEY            | gpt-4o-mini
+# anthropic       | ANTHROPIC_API_KEY         | claude-sonnet-4-20250514
+# google          | GOOGLE_API_KEY            | gemini-2.0-flash
+# azure_openai    | AZURE_OPENAI_API_KEY      | gpt-4o-mini
+# openai_compat   | OPENAI_COMPATIBLE_BASE_URL| (depends on server)
+# mcp_llm         | MCP_LLM_ENDPOINT          | (depends on server)
+
+providers:
+  openai:
+    # api_key: ""  # or set OPENAI_API_KEY env var
+    model: gpt-4o-mini
+    # base_url: ""  # custom endpoint (optional)
+
+  anthropic:
+    # api_key: ""  # or set ANTHROPIC_API_KEY env var
+    model: claude-sonnet-4-20250514
+
+  google:
+    # api_key: ""  # or set GOOGLE_API_KEY env var
+    model: gemini-2.0-flash
+
+  azure_openai:
+    # api_key: ""      # or set AZURE_OPENAI_API_KEY env var
+    # endpoint: ""     # or set AZURE_OPENAI_ENDPOINT env var
+    # api_version: "2024-06-01"
+    model: gpt-4o-mini
+
+  openai_compatible:
+    # For vLLM, LMStudio, LocalAI, text-generation-inference, etc.
+    # base_url: "http://localhost:8080"  # or set OPENAI_COMPATIBLE_BASE_URL
+    # api_key: ""  # some servers require a key
+    model: ""
+
+  mcp_llm:
+    # Route inference through any MCP server that exposes a generate tool.
+    # The MCP server must have a tool (default: "generate") that accepts:
+    #   {"prompt": str, "system": str, "temperature": float, "max_tokens": int}
+    # endpoint: "http://localhost:8181/mcp"  # or set MCP_LLM_ENDPOINT
+    # tool_name: "generate"                  # or set MCP_LLM_TOOL_NAME
+    # api_key: ""                            # or set MCP_LLM_API_KEY
+    model_label: mcp-llm
+
+# ---------------------------------------------------------------------------
+# Prompt defaults
+# ---------------------------------------------------------------------------
+prompts:
+  default_splunk_version: 9.5.4
+  default_time_range: last 15 minutes
+  strict_mode: true
+  require_sources: true
+  max_response_length: 2000
+  temperatures:
+    query_generation: 0.1
+    response_synthesis: 0.2
+    summarization: 0.3

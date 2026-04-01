@@ -1,0 +1,12 @@
+# Integration: Docling
+# Edit this file to configure the corresponding feature.
+
+enabled: false
+base_url: http://127.0.0.1:5001
+timeout: 300
+ocr_enabled: false
+extract_tables: true
+chunk_tokens: 250
+overlap_tokens: 40
+max_doc_size_mb: 100
+description: Docling document conversion sidecar (PDF, Word, Excel)

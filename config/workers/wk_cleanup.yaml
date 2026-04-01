@@ -1,0 +1,10 @@
+# Worker: Maintenance & Cleanup
+# Edit this file to configure the corresponding feature.
+
+enabled: true
+schedule: weekly
+day: sunday
+time: 04:00
+description: Log rotation, cache pruning, stale data cleanup
+max_log_age_days: 30
+prune_empty_collections: true
